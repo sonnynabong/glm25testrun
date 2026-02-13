@@ -123,6 +123,15 @@ export default function OS() {
     const [wallpaper, setWallpaper] = useState('gradient-1');
     const [showScreensaver, setShowScreensaver] = useState(false);
     const [idleTime, setIdleTime] = useState(0);
+    const [showBackgroundMenu, setShowBackgroundMenu] = useState(false);
+    const [waveSettings, setWaveSettings] = useState({
+        showWaves: true,
+        lineColor: '#3584e4',
+        waveSpeedX: 0.0125,
+        waveSpeedY: 0.01,
+        waveAmpX: 40,
+        waveAmpY: 20,
+    });
     const desktopRef = useRef(null);
 
     const allApps = [...apps, ...utilityApps, ...gameApps];
@@ -143,6 +152,7 @@ export default function OS() {
             try {
                 const settings = JSON.parse(savedSettings);
                 if (settings.wallpaper) setWallpaper(settings.wallpaper);
+                if (settings.waveSettings) setWaveSettings(settings.waveSettings);
             } catch (e) {
                 console.error('Failed to load settings:', e);
             }
@@ -184,6 +194,21 @@ export default function OS() {
         return () => clearInterval(idleInterval);
     }, [idleTime, showScreensaver]);
 
+    // Save wave settings when they change
+    useEffect(() => {
+        const savedSettings = localStorage.getItem('os-settings');
+        let settings = {};
+        if (savedSettings) {
+            try {
+                settings = JSON.parse(savedSettings);
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+        settings.waveSettings = waveSettings;
+        localStorage.setItem('os-settings', JSON.stringify(settings));
+    }, [waveSettings]);
+
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
@@ -220,12 +245,15 @@ export default function OS() {
     }, [activeWindow, windows]);
 
     useEffect(() => {
-        const handleClick = () => setContextMenu(null);
-        if (contextMenu) {
+        const handleClick = () => {
+            setContextMenu(null);
+            setShowBackgroundMenu(false);
+        };
+        if (contextMenu || showBackgroundMenu) {
             document.addEventListener('click', handleClick);
             return () => document.removeEventListener('click', handleClick);
         }
-    }, [contextMenu]);
+    }, [contextMenu, showBackgroundMenu]);
 
     const openWindow = useCallback((appId) => {
         const existingWindow = windows.find(w => w.appId === appId);
@@ -483,7 +511,15 @@ export default function OS() {
                 </div>
             )}
 
-            <WavesBackground />
+            {waveSettings.showWaves && (
+                <WavesBackground
+                    lineColor={waveSettings.lineColor}
+                    waveSpeedX={waveSettings.waveSpeedX}
+                    waveSpeedY={waveSettings.waveSpeedY}
+                    waveAmpX={waveSettings.waveAmpX}
+                    waveAmpY={waveSettings.waveAmpY}
+                />
+            )}
 
             <div
                 className="desktop"
@@ -637,6 +673,22 @@ export default function OS() {
                     </div>
                     <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }} />
                     <div
+                        onClick={() => { setContextMenu(null); setShowBackgroundMenu(true); }}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: 'var(--text-primary)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-hover)'}
+                        onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                        <Grid3X3 size={14} /> Background Options
+                    </div>
+                    <div
                         onClick={refreshDesktop}
                         style={{
                             padding: '8px 16px',
@@ -652,6 +704,121 @@ export default function OS() {
                     >
                         <RefreshCw size={14} /> Refresh
                     </div>
+                </div>
+            )}
+
+            {/* Background Options Menu */}
+            {showBackgroundMenu && (
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                        position: 'fixed',
+                        left: contextMenu ? contextMenu.x : '50%',
+                        top: contextMenu ? contextMenu.y : '50%',
+                        transform: 'translate(-50%, -50%)',
+                        background: 'var(--bg-surface)',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: '12px',
+                        padding: '16px',
+                        minWidth: '280px',
+                        zIndex: 10001,
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                    }}
+                >
+                    <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: 'var(--text-primary)' }}>
+                        Background Options
+                    </div>
+
+                    {/* Toggle Waves */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                        <span style={{ color: 'var(--text-primary)', fontSize: '13px' }}>Show Waves</span>
+                        <button
+                            onClick={() => setWaveSettings(s => ({ ...s, showWaves: !s.showWaves }))}
+                            style={{
+                                width: '44px',
+                                height: '24px',
+                                borderRadius: '12px',
+                                border: 'none',
+                                background: waveSettings.showWaves ? 'var(--accent-primary)' : 'var(--bg-hover)',
+                                cursor: 'pointer',
+                                position: 'relative',
+                            }}
+                        >
+                            <div style={{
+                                width: '18px',
+                                height: '18px',
+                                borderRadius: '50%',
+                                background: 'white',
+                                position: 'absolute',
+                                top: '3px',
+                                left: waveSettings.showWaves ? '23px' : '3px',
+                                transition: 'left 0.2s ease',
+                            }} />
+                        </button>
+                    </div>
+
+                    {/* Color Picker */}
+                    <div style={{ marginBottom: '16px' }}>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '8px' }}>Wave Color</span>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {['#3584e4', '#e01b24', '#33d17a', '#f6d32d', '#ff7800', '#9141ac', '#ffffff', '#1c71d8'].map(color => (
+                                <button
+                                    key={color}
+                                    onClick={() => setWaveSettings(s => ({ ...s, lineColor: color }))}
+                                    style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '6px',
+                                        border: waveSettings.lineColor === color ? '2px solid var(--text-primary)' : '2px solid transparent',
+                                        background: color,
+                                        cursor: 'pointer',
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Reset button */}
+                    <button
+                        onClick={() => setWaveSettings({
+                            showWaves: true,
+                            lineColor: '#3584e4',
+                            waveSpeedX: 0.0125,
+                            waveSpeedY: 0.01,
+                            waveAmpX: 40,
+                            waveAmpY: 20,
+                        })}
+                        style={{
+                            width: '100%',
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: 'none',
+                            background: 'var(--bg-hover)',
+                            color: 'var(--text-primary)',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            marginBottom: '8px',
+                        }}
+                    >
+                        Reset to Default
+                    </button>
+
+                    {/* Close button */}
+                    <button
+                        onClick={() => setShowBackgroundMenu(false)}
+                        style={{
+                            width: '100%',
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: 'none',
+                            background: 'var(--accent-primary)',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                        }}
+                    >
+                        Done
+                    </button>
                 </div>
             )}
 
