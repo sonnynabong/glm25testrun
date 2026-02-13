@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw } from 'lucide-react';
+import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash } from 'lucide-react';
 import Window from './Window';
 import AboutMe from './apps/AboutMe';
 import Resume from './apps/Resume';
 import Skills from './apps/Skills';
 import ProjectsGallery from './apps/ProjectsGallery';
 import Portfolio from './apps/Portfolio';
+import Snake from './apps/Snake';
+import MemoryMatch from './apps/MemoryMatch';
+import Pong from './apps/Pong';
+import Game2048 from './apps/Game2048';
+import FolderWindow from './apps/FolderWindow';
 
 const apps = [
     { id: 'about', title: 'About Me', icon: 'about', iconComponent: User },
@@ -15,12 +20,23 @@ const apps = [
     { id: 'portfolio', title: 'Portfolio', icon: 'portfolio', iconComponent: Briefcase },
 ];
 
+const gameApps = [
+    { id: 'snake', title: 'Snake', icon: 'snake', iconComponent: Gamepad2 },
+    { id: 'memory', title: 'Memory', icon: 'memory', iconComponent: Puzzle },
+    { id: 'pong', title: 'Pong', icon: 'pong', iconComponent: Music },
+    { id: '2048', title: '2048', icon: '2048', iconComponent: Hash },
+];
+
 const appComponents = {
     about: AboutMe,
     resume: Resume,
     skills: Skills,
     projects: ProjectsGallery,
     portfolio: Portfolio,
+    snake: Snake,
+    memory: MemoryMatch,
+    pong: Pong,
+    '2048': Game2048,
 };
 
 const initialPositions = {
@@ -29,6 +45,10 @@ const initialPositions = {
     skills: { x: 150, y: 90 },
     projects: { x: 200, y: 120 },
     portfolio: { x: 250, y: 150 },
+    snake: { x: 80, y: 80 },
+    memory: { x: 100, y: 100 },
+    pong: { x: 120, y: 120 },
+    '2048': { x: 140, y: 140 },
 };
 
 export default function OS() {
@@ -37,9 +57,9 @@ export default function OS() {
     const [zIndexCounter, setZIndexCounter] = useState(100);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [contextMenu, setContextMenu] = useState(null);
+    const [expandedFolder, setExpandedFolder] = useState(null);
     const desktopRef = useRef(null);
 
-    // Update clock
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
@@ -47,7 +67,6 @@ export default function OS() {
         return () => clearInterval(timer);
     }, []);
 
-    // Load saved windows from localStorage
     useEffect(() => {
         const saved = localStorage.getItem('os-windows');
         if (saved) {
@@ -62,7 +81,6 @@ export default function OS() {
         }
     }, []);
 
-    // Save windows state
     useEffect(() => {
         const timeout = setTimeout(() => {
             localStorage.setItem('os-windows', JSON.stringify({ windows }));
@@ -70,10 +88,8 @@ export default function OS() {
         return () => clearTimeout(timeout);
     }, [windows]);
 
-    // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e) => {
-            // Alt+F4 to close active window
             if (e.altKey && e.key === 'F4') {
                 e.preventDefault();
                 if (activeWindow) {
@@ -83,9 +99,9 @@ export default function OS() {
                     }
                 }
             }
-            // Escape to close context menu
             if (e.key === 'Escape') {
                 setContextMenu(null);
+                setExpandedFolder(null);
             }
         };
 
@@ -93,7 +109,6 @@ export default function OS() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [activeWindow, windows]);
 
-    // Close context menu on click outside
     useEffect(() => {
         const handleClick = () => setContextMenu(null);
         if (contextMenu) {
@@ -114,8 +129,14 @@ export default function OS() {
             setActiveWindow(appId);
             setZIndexCounter(prev => prev + 1);
         } else {
-            const app = apps.find(a => a.id === appId);
+            const app = apps.find(a => a.id === appId) || gameApps.find(a => a.id === appId);
             const position = initialPositions[appId] || { x: 100, y: 100 };
+
+            const size = appId === 'snake' ? { width: 450, height: 450 } :
+                appId === 'memory' ? { width: 380, height: 420 } :
+                    appId === 'pong' ? { width: 440, height: 420 } :
+                        appId === '2048' ? { width: 340, height: 420 } :
+                            { width: 650, height: 550 };
 
             setWindows(prev => [...prev, {
                 id: `${appId}-${Date.now()}`,
@@ -123,12 +144,47 @@ export default function OS() {
                 title: app.title,
                 icon: app.icon,
                 position,
-                size: { width: 650, height: 550 },
+                size,
                 minimized: false,
                 zIndex: zIndexCounter + 1
             }]);
             setActiveWindow(appId);
             setZIndexCounter(prev => prev + 1);
+            setExpandedFolder(null);
+        }
+    }, [windows, zIndexCounter]);
+
+    const openFolder = useCallback((folderId, folderTitle, items) => {
+        const existingWindow = windows.find(w => w.appId === `folder-${folderId}`);
+
+        if (existingWindow) {
+            if (existingWindow.minimized) {
+                setWindows(prev => prev.map(w =>
+                    w.appId === `folder-${folderId}` ? { ...w, minimized: false } : w
+                ));
+            }
+            setActiveWindow(`folder-${folderId}`);
+            setZIndexCounter(prev => prev + 1);
+        } else {
+            const position = initialPositions[folderId] || { x: 150, y: 80 };
+            const size = { width: 500, height: 400 };
+
+            setWindows(prev => [...prev, {
+                id: `folder-${folderId}-${Date.now()}`,
+                appId: `folder-${folderId}`,
+                title: folderTitle,
+                icon: 'folder',
+                position,
+                size,
+                minimized: false,
+                zIndex: zIndexCounter + 1,
+                isFolder: true,
+                folderItems: items,
+                folderTitle: folderTitle
+            }]);
+            setActiveWindow(`folder-${folderId}`);
+            setZIndexCounter(prev => prev + 1);
+            setExpandedFolder(null);
         }
     }, [windows, zIndexCounter]);
 
@@ -156,13 +212,12 @@ export default function OS() {
         }
     }, [windows, zIndexCounter]);
 
-    // Window snap to edge
     const snapWindow = useCallback((windowId, direction) => {
         const window = windows.find(w => w.id === windowId);
         if (!window) return;
 
         const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight - 48; // Account for taskbar
+        const screenHeight = window.innerHeight - 48;
 
         let newPosition = { ...window.position };
         let newSize = { ...window.size };
@@ -240,21 +295,40 @@ export default function OS() {
     };
 
     const refreshDesktop = () => {
-        // Clear localStorage and reload
         localStorage.removeItem('os-windows');
         setWindows([]);
         setActiveWindow(null);
         setContextMenu(null);
     };
 
+    const toggleFolder = (folderId) => {
+        setExpandedFolder(prev => prev === folderId ? null : folderId);
+    };
+
+    const allApps = [...apps, ...gameApps];
+
     return (
         <>
-            {/* Desktop */}
             <div
                 className="desktop"
                 ref={desktopRef}
                 onContextMenu={handleContextMenu}
             >
+                <div
+                    className="desktop-icon"
+                    onClick={() => openFolder('games', 'Games', gameApps)}
+                    style={{ position: 'relative' }}
+                >
+                    <div className="icon-wrapper">
+                        <FolderOpen
+                            size={36}
+                            color="var(--text-primary)"
+                            strokeWidth={1.5}
+                        />
+                    </div>
+                    <span className="icon-label">Games</span>
+                </div>
+
                 {apps.map((app) => (
                     <div
                         key={app.id}
@@ -273,8 +347,31 @@ export default function OS() {
                 ))}
             </div>
 
-            {/* Windows */}
             {windows.map((window) => {
+                if (window.isFolder) {
+                    return (
+                        <Window
+                            key={window.id}
+                            id={window.id}
+                            title={window.title}
+                            icon={window.icon}
+                            initialPosition={window.position}
+                            initialSize={window.size}
+                            onClose={closeWindow}
+                            onMinimize={minimizeWindow}
+                            onFocus={focusWindow}
+                            onSnap={snapWindow}
+                            isActive={activeWindow === window.appId}
+                            zIndex={window.zIndex}
+                        >
+                            <FolderWindow
+                                folderTitle={window.folderTitle}
+                                items={window.folderItems}
+                                onItemClick={(itemId) => openWindow(itemId)}
+                            />
+                        </Window>
+                    );
+                }
                 const AppComponent = appComponents[window.appId];
                 return (
                     <Window
@@ -296,10 +393,8 @@ export default function OS() {
                 );
             })}
 
-            {/* Context Menu */}
             {contextMenu && (
                 <div
-                    className="context-menu"
                     style={{
                         position: 'fixed',
                         left: contextMenu.x,
@@ -315,7 +410,6 @@ export default function OS() {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div
-                        className="context-menu-item"
                         onClick={() => { openWindow('about'); setContextMenu(null); }}
                         style={{
                             padding: '8px 16px',
@@ -332,7 +426,6 @@ export default function OS() {
                         <User size={14} /> About Me
                     </div>
                     <div
-                        className="context-menu-item"
                         onClick={() => { openWindow('portfolio'); setContextMenu(null); }}
                         style={{
                             padding: '8px 16px',
@@ -350,7 +443,6 @@ export default function OS() {
                     </div>
                     <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }} />
                     <div
-                        className="context-menu-item"
                         onClick={refreshDesktop}
                         style={{
                             padding: '8px 16px',
@@ -369,14 +461,13 @@ export default function OS() {
                 </div>
             )}
 
-            {/* Taskbar */}
             <div className="taskbar">
                 <div className="taskbar-start" title="Portfolio OS">
                     <Grid3X3 size={20} />
                 </div>
 
                 <div className="taskbar-apps">
-                    {apps.map((app) => {
+                    {allApps.map((app) => {
                         const window = windows.find(w => w.appId === app.id);
                         const isOpen = !!window;
                         const isActive = isOpen && activeWindow === app.id && !window.minimized;

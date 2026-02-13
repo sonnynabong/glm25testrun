@@ -939,3 +939,74 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Folder Window Styles */
+.folder-window {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-surface);
+}
+
+.folder-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-elevated);
+}
+
+.folder-title-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.folder-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.folder-content {
+    flex: 1;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    align-content: start;
+    overflow-y: auto;
+}
+
+.folder-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.folder-item:hover {
+    background: var(--bg-hover);
+}
+
+.folder-item:active {
+    background: var(--bg-active);
+}
+
+.folder-item-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.folder-item-label {
+    font-size: 12px;
+    color: var(--text-primary);
+    text-align: center;
+    word-break: break-word;
+    max-width: 100px;
+}
