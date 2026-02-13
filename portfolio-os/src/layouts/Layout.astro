@@ -1,0 +1,48 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Browser-based OS Portfolio" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  </head>
+  <body>
+    <!-- Boot Screen -->
+    <div class="boot-screen" id="boot-screen">
+      <div class="boot-logo">PORTFOLIO OS</div>
+      <div class="boot-terminal">
+        <div class="boot-line">> Initializing system...</div>
+        <div class="boot-line">> Loading modules...</div>
+        <div class="boot-line">> Mounting components...</div>
+        <div class="boot-line">> System ready.</div>
+      </div>
+      <div class="boot-progress">
+        <div class="boot-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <slot />
+
+    <script is:inline>
+      // Hide boot screen after animation
+      setTimeout(() => {
+        const bootScreen = document.getElementById('boot-screen');
+        if (bootScreen) {
+          bootScreen.style.display = 'none';
+        }
+      }, 3500);
+    </script>
+  </body>
+</html>
