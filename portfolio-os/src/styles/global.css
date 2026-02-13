@@ -915,8 +915,57 @@ body {
     }
 
     .window {
-        min-width: 280px;
-        min-height: 200px;
+        min-width: calc(100vw - 16px) !important;
+        min-height: calc(100vh - 70px) !important;
+        width: calc(100vw - 16px) !important;
+        height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
+        top: 8px !important;
+        left: 8px !important;
+        right: 8px !important;
+        bottom: 54px !important;
+        border-radius: 12px;
+    }
+
+    .window-title-bar {
+        padding: 10px 12px;
+    }
+
+    .window-title {
+        font-size: 13px;
+    }
+
+    .window-controls {
+        gap: 4px;
+    }
+
+    .window-btn-gnome {
+        width: 20px;
+        height: 20px;
+    }
+
+    .window-btn-gnome svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    .window-content {
+        padding: 12px;
+    }
+
+    .taskbar {
+        padding: 0 8px;
+    }
+
+    .taskbar-app-indicator {
+        width: 32px;
+        height: 32px;
+    }
+
+    .taskbar-app-indicator svg {
+        width: 18px;
+        height: 18px;
     }
 
     .taskbar-app-label {
@@ -928,7 +977,7 @@ body {
     }
 
     .app-title {
-        fontSize: '18px';
+        font-size: 18px;
     }
 
     .projects-grid {
@@ -937,6 +986,32 @@ body {
 
     .skills-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Folder window mobile */
+    .folder-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .folder-item {
+        padding: 8px;
+    }
+
+    .folder-item-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .folder-item-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .folder-item-label {
+        font-size: 11px;
+        max-width: 70px;
     }
 }
 
