@@ -280,8 +280,8 @@ body {
     position: fixed;
     background: var(--glass-bg);
     border: 1px solid var(--border-light);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
     min-width: 400px;
     min-height: 300px;
     display: flex;
@@ -290,8 +290,9 @@ body {
     transition: box-shadow 0.2s ease;
 }
 
-.window:focus-within {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+.window:focus-within,
+.window.active {
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .window.maximized {
@@ -309,12 +310,12 @@ body {
 }
 
 .window.opening {
-    animation: windowOpen 0.2s ease forwards;
+    animation: windowOpen 0.25s ease forwards;
 }
 
 @keyframes windowOpen {
     from {
-        transform: scale(0.95);
+        transform: scale(0.9);
         opacity: 0;
     }
 
@@ -322,6 +323,17 @@ body {
         transform: scale(1);
         opacity: 1;
     }
+}
+
+/* Window shadow depth layers */
+.window::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+    opacity: 0.5;
 }
 
 /* Window Title Bar */
@@ -1084,4 +1096,70 @@ body {
     text-align: center;
     word-break: break-word;
     max-width: 100px;
+}
+
+/* Notification animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Mobile responsive taskbar improvements */
+@media (max-width: 768px) {
+    .taskbar-apps {
+        max-width: 60%;
+    }
+
+    .taskbar-app-label {
+        display: none;
+    }
+
+    .desktop {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+
+    .desktop-icon .icon-label {
+        font-size: 10px;
+    }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) and (pointer: coarse) {
+    .desktop-icon:active {
+        background: var(--bg-active);
+        transform: scale(0.95);
+    }
+
+    .window-btn-gnome {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .resize-handle {
+        min-width: 20px;
+        min-height: 20px;
+    }
+}
+
+/* Focus styles for accessibility */
+.desktop-icon:focus,
+.window:focus,
+button:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --border-light: #888;
+        --text-primary: #fff;
+        --bg-surface: #000;
+    }
 }

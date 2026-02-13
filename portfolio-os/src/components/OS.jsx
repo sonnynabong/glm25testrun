@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash } from 'lucide-react';
+import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash, Calculator, Terminal, Calendar, Settings, Cloud, Folder, StickyNote, Grid } from 'lucide-react';
 import Window from './Window';
 import AboutMe from './apps/AboutMe';
 import Resume from './apps/Resume';
@@ -11,6 +11,15 @@ import MemoryMatch from './apps/MemoryMatch';
 import Pong from './apps/Pong';
 import Game2048 from './apps/Game2048';
 import FolderWindow from './apps/FolderWindow';
+import CalculatorApp from './apps/Calculator';
+import TerminalApp from './apps/Terminal';
+import NotesApp from './apps/Notes';
+import CalendarApp from './apps/Calendar';
+import SettingsApp from './apps/Settings';
+import WeatherApp from './apps/Weather';
+import FileExplorerApp from './apps/FileExplorer';
+import MinesweeperApp from './apps/Minesweeper';
+import TetrisApp from './apps/Tetris';
 
 const apps = [
     { id: 'about', title: 'About Me', icon: 'about', iconComponent: User },
@@ -20,11 +29,23 @@ const apps = [
     { id: 'portfolio', title: 'Portfolio', icon: 'portfolio', iconComponent: Briefcase },
 ];
 
+const utilityApps = [
+    { id: 'calculator', title: 'Calculator', icon: 'calculator', iconComponent: Calculator },
+    { id: 'terminal', title: 'Terminal', icon: 'terminal', iconComponent: Terminal },
+    { id: 'notes', title: 'Notes', icon: 'notes', iconComponent: StickyNote },
+    { id: 'calendar', title: 'Calendar', icon: 'calendar', iconComponent: Calendar },
+    { id: 'settings', title: 'Settings', icon: 'settings', iconComponent: Settings },
+    { id: 'weather', title: 'Weather', icon: 'weather', iconComponent: Cloud },
+    { id: 'files', title: 'Files', icon: 'files', iconComponent: Folder },
+];
+
 const gameApps = [
     { id: 'snake', title: 'Snake', icon: 'snake', iconComponent: Gamepad2 },
     { id: 'memory', title: 'Memory', icon: 'memory', iconComponent: Puzzle },
     { id: 'pong', title: 'Pong', icon: 'pong', iconComponent: Music },
     { id: '2048', title: '2048', icon: '2048', iconComponent: Hash },
+    { id: 'minesweeper', title: 'Minesweeper', icon: 'minesweeper', iconComponent: Grid },
+    { id: 'tetris', title: 'Tetris', icon: 'tetris', iconComponent: Gamepad2 },
 ];
 
 const appComponents = {
@@ -37,6 +58,36 @@ const appComponents = {
     memory: MemoryMatch,
     pong: Pong,
     '2048': Game2048,
+    calculator: CalculatorApp,
+    terminal: TerminalApp,
+    notes: NotesApp,
+    calendar: CalendarApp,
+    settings: SettingsApp,
+    weather: WeatherApp,
+    files: FileExplorerApp,
+    minesweeper: MinesweeperApp,
+    tetris: TetrisApp,
+};
+
+const appSizes = {
+    snake: { width: 450, height: 450 },
+    memory: { width: 380, height: 420 },
+    pong: { width: 440, height: 420 },
+    '2048': { width: 340, height: 420 },
+    calculator: { width: 320, height: 450 },
+    terminal: { width: 600, height: 400 },
+    notes: { width: 500, height: 400 },
+    calendar: { width: 450, height: 500 },
+    settings: { width: 550, height: 450 },
+    weather: { width: 400, height: 500 },
+    files: { width: 600, height: 450 },
+    minesweeper: { width: 380, height: 450 },
+    tetris: { width: 380, height: 500 },
+    about: { width: 650, height: 550 },
+    resume: { width: 700, height: 600 },
+    skills: { width: 600, height: 500 },
+    projects: { width: 750, height: 550 },
+    portfolio: { width: 650, height: 550 },
 };
 
 const initialPositions = {
@@ -45,10 +96,19 @@ const initialPositions = {
     skills: { x: 150, y: 90 },
     projects: { x: 200, y: 120 },
     portfolio: { x: 250, y: 150 },
+    calculator: { x: 100, y: 100 },
+    terminal: { x: 80, y: 80 },
+    notes: { x: 120, y: 60 },
+    calendar: { x: 150, y: 100 },
+    settings: { x: 200, y: 120 },
+    weather: { x: 80, y: 150 },
+    files: { x: 100, y: 80 },
     snake: { x: 80, y: 80 },
     memory: { x: 100, y: 100 },
     pong: { x: 120, y: 120 },
     '2048': { x: 140, y: 140 },
+    minesweeper: { x: 160, y: 100 },
+    tetris: { x: 180, y: 80 },
 };
 
 export default function OS() {
@@ -58,16 +118,36 @@ export default function OS() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [contextMenu, setContextMenu] = useState(null);
     const [expandedFolder, setExpandedFolder] = useState(null);
+    const [notification, setNotification] = useState(null);
+    const [wallpaper, setWallpaper] = useState('gradient-1');
+    const [showScreensaver, setShowScreensaver] = useState(false);
+    const [idleTime, setIdleTime] = useState(0);
     const desktopRef = useRef(null);
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
+    const allApps = [...apps, ...utilityApps, ...gameApps];
+
+    const wallpapers = {
+        'gradient-1': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'gradient-2': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'gradient-3': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        'gradient-4': 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+        'gradient-5': 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+        'gradient-6': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
+    };
 
     useEffect(() => {
+        // Load settings
+        const savedSettings = localStorage.getItem('os-settings');
+        if (savedSettings) {
+            try {
+                const settings = JSON.parse(savedSettings);
+                if (settings.wallpaper) setWallpaper(settings.wallpaper);
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+
+        // Load windows
         const saved = localStorage.getItem('os-windows');
         if (saved) {
             try {
@@ -79,6 +159,35 @@ export default function OS() {
                 console.error('Failed to load saved windows:', e);
             }
         }
+
+        // Mouse move handler to reset idle time
+        const handleMouseMove = () => {
+            setIdleTime(0);
+            if (showScreensaver) {
+                setShowScreensaver(false);
+            }
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
+    // Idle detection for screensaver
+    useEffect(() => {
+        const idleInterval = setInterval(() => {
+            setIdleTime(t => t + 1);
+            if (idleTime >= 300 && !showScreensaver) { // 5 minutes
+                setShowScreensaver(true);
+            }
+        }, 1000);
+        return () => clearInterval(idleInterval);
+    }, [idleTime, showScreensaver]);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
     }, []);
 
     useEffect(() => {
@@ -129,14 +238,9 @@ export default function OS() {
             setActiveWindow(appId);
             setZIndexCounter(prev => prev + 1);
         } else {
-            const app = apps.find(a => a.id === appId) || gameApps.find(a => a.id === appId);
+            const app = apps.find(a => a.id === appId) || utilityApps.find(a => a.id === appId) || gameApps.find(a => a.id === appId);
             const position = initialPositions[appId] || { x: 100, y: 100 };
-
-            const size = appId === 'snake' ? { width: 450, height: 450 } :
-                appId === 'memory' ? { width: 380, height: 420 } :
-                    appId === 'pong' ? { width: 440, height: 420 } :
-                        appId === '2048' ? { width: 340, height: 420 } :
-                            { width: 650, height: 550 };
+            const size = appSizes[appId] || { width: 650, height: 550 };
 
             setWindows(prev => [...prev, {
                 id: `${appId}-${Date.now()}`,
@@ -151,6 +255,10 @@ export default function OS() {
             setActiveWindow(appId);
             setZIndexCounter(prev => prev + 1);
             setExpandedFolder(null);
+
+            // Show notification for new app
+            setNotification(`${app.title} opened`);
+            setTimeout(() => setNotification(null), 2000);
         }
     }, [windows, zIndexCounter]);
 
@@ -305,15 +413,97 @@ export default function OS() {
         setExpandedFolder(prev => prev === folderId ? null : folderId);
     };
 
-    const allApps = [...apps, ...gameApps];
+    // Get icon component by name
+    const getIconComponent = (iconName) => {
+        const allIcons = {
+            about: User, resume: FileText, skills: Code, projects: Layers, portfolio: Briefcase,
+            calculator: Calculator, terminal: Terminal, notes: StickyNote, calendar: Calendar,
+            settings: Settings, weather: Cloud, files: Folder, snake: Gamepad2, memory: Puzzle,
+            pong: Music, '2048': Hash, minesweeper: Grid, tetris: Gamepad2, folder: FolderOpen,
+        };
+        return allIcons[iconName] || Folder;
+    };
+
+    const utilityFolderItems = [
+        { id: 'calculator', title: 'Calculator', icon: 'calculator', iconComponent: Calculator },
+        { id: 'terminal', title: 'Terminal', icon: 'terminal', iconComponent: Terminal },
+        { id: 'notes', title: 'Notes', icon: 'notes', iconComponent: StickyNote },
+        { id: 'calendar', title: 'Calendar', icon: 'calendar', iconComponent: Calendar },
+        { id: 'settings', title: 'Settings', icon: 'settings', iconComponent: Settings },
+        { id: 'weather', title: 'Weather', icon: 'weather', iconComponent: Cloud },
+        { id: 'files', title: 'Files', icon: 'files', iconComponent: Folder },
+    ];
 
     return (
         <>
+            {/* Screensaver */}
+            {showScreensaver && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        inset: 0,
+                        background: wallpapers['gradient-5'],
+                        zIndex: 99999,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                        setShowScreensaver(false);
+                        setIdleTime(0);
+                    }}
+                >
+                    <div style={{ textAlign: 'center', color: 'white' }}>
+                        <div style={{ fontSize: '72px', marginBottom: '16px' }}>Portfolio OS</div>
+                        <div style={{ fontSize: '18px', opacity: 0.7 }}>Click anywhere to exit</div>
+                    </div>
+                </div>
+            )}
+
+            {/* Notification */}
+            {notification && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        bottom: '60px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: 'var(--bg-elevated)',
+                        color: 'var(--text-primary)',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                        zIndex: 10001,
+                        animation: 'fadeInUp 0.3s ease',
+                    }}
+                >
+                    {notification}
+                </div>
+            )}
+
             <div
                 className="desktop"
                 ref={desktopRef}
                 onContextMenu={handleContextMenu}
             >
+                {/* Utility Apps Folder */}
+                <div
+                    className="desktop-icon"
+                    onClick={() => openFolder('utility', 'Utilities', utilityFolderItems)}
+                    style={{ position: 'relative' }}
+                >
+                    <div className="icon-wrapper">
+                        <Grid3X3
+                            size={36}
+                            color="var(--text-primary)"
+                            strokeWidth={1.5}
+                        />
+                    </div>
+                    <span className="icon-label">Utilities</span>
+                </div>
+
+                {/* Games Folder */}
                 <div
                     className="desktop-icon"
                     onClick={() => openFolder('games', 'Games', gameApps)}
@@ -329,6 +519,7 @@ export default function OS() {
                     <span className="icon-label">Games</span>
                 </div>
 
+                {/* Main Apps */}
                 {apps.map((app) => (
                     <div
                         key={app.id}
@@ -467,16 +658,16 @@ export default function OS() {
                 </div>
 
                 <div className="taskbar-apps">
-                    {allApps.map((app) => {
-                        const window = windows.find(w => w.appId === app.id);
-                        const isOpen = !!window;
-                        const isActive = isOpen && activeWindow === app.id && !window.minimized;
+                    {windows.filter(w => !w.isFolder).map((window) => {
+                        const app = allApps.find(a => a.id === window.appId);
+                        if (!app) return null;
+                        const isActive = activeWindow === window.appId && !window.minimized;
 
                         return (
                             <div
-                                key={app.id}
-                                className={`taskbar-app ${isActive ? 'active' : ''} ${isOpen && window.minimized ? 'minimized' : ''}`}
-                                onClick={() => handleTaskbarClick(app.id)}
+                                key={window.id}
+                                className={`taskbar-app ${isActive ? 'active' : ''} ${window.minimized ? 'minimized' : ''}`}
+                                onClick={() => handleTaskbarClick(window.appId)}
                             >
                                 <app.iconComponent size={18} />
                                 <span className="taskbar-app-label">{app.title}</span>
