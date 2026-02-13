@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { User, FileText, Code, Layers, Folder, Grid3X3, Briefcase } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw } from 'lucide-react';
 import Window from './Window';
 import AboutMe from './apps/AboutMe';
 import Resume from './apps/Resume';
@@ -36,6 +36,8 @@ export default function OS() {
     const [activeWindow, setActiveWindow] = useState(null);
     const [zIndexCounter, setZIndexCounter] = useState(100);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [contextMenu, setContextMenu] = useState(null);
+    const desktopRef = useRef(null);
 
     // Update clock
     useEffect(() => {
@@ -68,11 +70,42 @@ export default function OS() {
         return () => clearTimeout(timeout);
     }, [windows]);
 
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Alt+F4 to close active window
+            if (e.altKey && e.key === 'F4') {
+                e.preventDefault();
+                if (activeWindow) {
+                    const window = windows.find(w => w.appId === activeWindow);
+                    if (window) {
+                        closeWindow(window.id);
+                    }
+                }
+            }
+            // Escape to close context menu
+            if (e.key === 'Escape') {
+                setContextMenu(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [activeWindow, windows]);
+
+    // Close context menu on click outside
+    useEffect(() => {
+        const handleClick = () => setContextMenu(null);
+        if (contextMenu) {
+            document.addEventListener('click', handleClick);
+            return () => document.removeEventListener('click', handleClick);
+        }
+    }, [contextMenu]);
+
     const openWindow = useCallback((appId) => {
         const existingWindow = windows.find(w => w.appId === appId);
 
         if (existingWindow) {
-            // Bring to front if already open
             if (existingWindow.minimized) {
                 setWindows(prev => prev.map(w =>
                     w.appId === appId ? { ...w, minimized: false } : w
@@ -81,7 +114,6 @@ export default function OS() {
             setActiveWindow(appId);
             setZIndexCounter(prev => prev + 1);
         } else {
-            // Open new window
             const app = apps.find(a => a.id === appId);
             const position = initialPositions[appId] || { x: 100, y: 100 };
 
@@ -124,23 +156,63 @@ export default function OS() {
         }
     }, [windows, zIndexCounter]);
 
+    // Window snap to edge
+    const snapWindow = useCallback((windowId, direction) => {
+        const window = windows.find(w => w.id === windowId);
+        if (!window) return;
+
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight - 48; // Account for taskbar
+
+        let newPosition = { ...window.position };
+        let newSize = { ...window.size };
+
+        switch (direction) {
+            case 'left':
+                newPosition = { x: 0, y: 0 };
+                newSize = { width: screenWidth / 2, height: screenHeight };
+                break;
+            case 'right':
+                newPosition = { x: screenWidth / 2, y: 0 };
+                newSize = { width: screenWidth / 2, height: screenHeight };
+                break;
+            case 'top':
+                newPosition = { x: 0, y: 0 };
+                newSize = { width: screenWidth, height: screenHeight };
+                break;
+            case 'maximize':
+                newPosition = { x: 0, y: 0 };
+                newSize = { width: screenWidth, height: screenHeight };
+                break;
+        }
+
+        setWindows(prev => prev.map(w =>
+            w.id === windowId ? { ...w, position: newPosition, size: newSize } : w
+        ));
+    }, [windows]);
+
+    const handleContextMenu = (e) => {
+        e.preventDefault();
+        setContextMenu({
+            x: e.clientX,
+            y: e.clientY,
+        });
+    };
+
     const handleTaskbarClick = (appId) => {
         const window = windows.find(w => w.appId === appId);
         if (window) {
             if (window.minimized) {
-                // Restore minimized window
                 setWindows(prev => prev.map(w =>
                     w.appId === appId ? { ...w, minimized: false } : w
                 ));
                 setActiveWindow(appId);
                 setZIndexCounter(prev => prev + 1);
             } else if (activeWindow === appId) {
-                // Minimize if already active
                 setWindows(prev => prev.map(w =>
                     w.appId === appId ? { ...w, minimized: true } : w
                 ));
             } else {
-                // Bring to front
                 setActiveWindow(appId);
                 setWindows(prev => prev.map(w =>
                     w.appId === appId ? { ...w, zIndex: zIndexCounter + 1 } : w
@@ -167,10 +239,22 @@ export default function OS() {
         });
     };
 
+    const refreshDesktop = () => {
+        // Clear localStorage and reload
+        localStorage.removeItem('os-windows');
+        setWindows([]);
+        setActiveWindow(null);
+        setContextMenu(null);
+    };
+
     return (
         <>
             {/* Desktop */}
-            <div className="desktop">
+            <div
+                className="desktop"
+                ref={desktopRef}
+                onContextMenu={handleContextMenu}
+            >
                 {apps.map((app) => (
                     <div
                         key={app.id}
@@ -203,6 +287,7 @@ export default function OS() {
                         onClose={closeWindow}
                         onMinimize={minimizeWindow}
                         onFocus={focusWindow}
+                        onSnap={snapWindow}
                         isActive={activeWindow === window.appId}
                         zIndex={window.zIndex}
                     >
@@ -210,6 +295,79 @@ export default function OS() {
                     </Window>
                 );
             })}
+
+            {/* Context Menu */}
+            {contextMenu && (
+                <div
+                    className="context-menu"
+                    style={{
+                        position: 'fixed',
+                        left: contextMenu.x,
+                        top: contextMenu.y,
+                        background: 'var(--bg-surface)',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: '8px',
+                        padding: '6px 0',
+                        minWidth: '180px',
+                        zIndex: 10000,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div
+                        className="context-menu-item"
+                        onClick={() => { openWindow('about'); setContextMenu(null); }}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: 'var(--text-primary)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-hover)'}
+                        onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                        <User size={14} /> About Me
+                    </div>
+                    <div
+                        className="context-menu-item"
+                        onClick={() => { openWindow('portfolio'); setContextMenu(null); }}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: 'var(--text-primary)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-hover)'}
+                        onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                        <Briefcase size={14} /> Open Portfolio
+                    </div>
+                    <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }} />
+                    <div
+                        className="context-menu-item"
+                        onClick={refreshDesktop}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: 'var(--text-primary)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-hover)'}
+                        onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                        <RefreshCw size={14} /> Refresh
+                    </div>
+                </div>
+            )}
 
             {/* Taskbar */}
             <div className="taskbar">

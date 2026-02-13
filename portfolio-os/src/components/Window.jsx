@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Folder, User, FileText, Code, Layers, Minus, Square, X } from 'lucide-react';
+import { Folder, User, FileText, Code, Layers, Minus, Square, X, Maximize2 } from 'lucide-react';
 
 const iconMap = {
     about: User,
@@ -19,6 +19,7 @@ export default function Window({
     onClose,
     onMinimize,
     onFocus,
+    onSnap,
     isActive,
     zIndex
 }) {
@@ -33,12 +34,13 @@ export default function Window({
     const windowRef = useRef(null);
     const dragOffset = useRef({ x: 0, y: 0 });
     const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0, px: 0, py: 0 });
+    const lastClickTime = useRef(0);
 
     const IconComponent = iconMap[icon] || Folder;
 
     // Handle drag
     const handleMouseDown = useCallback((e) => {
-        if (e.target.closest('.window-controls') || e.target.closest('.window-btn')) return;
+        if (e.target.closest('.window-controls') || e.target.closest('.window-btn-gnome')) return;
         if (isMaximized) return;
 
         setIsDragging(true);
@@ -50,6 +52,22 @@ export default function Window({
             y: e.clientY - rect.top
         };
     }, [id, isMaximized, onFocus]);
+
+    // Handle title bar double-click for snap
+    const handleTitleBarClick = useCallback((e) => {
+        const currentTime = Date.now();
+        const timeDiff = currentTime - lastClickTime.current;
+
+        if (timeDiff < 300) {
+            // Double click - maximize/restore
+            handleMaximize();
+        } else {
+            // Single click - handle drag or focus
+            handleMouseDown(e);
+        }
+
+        lastClickTime.current = currentTime;
+    }, [handleMouseDown]);
 
     // Handle resize
     const handleResizeStart = useCallback((direction, e) => {
@@ -134,7 +152,14 @@ export default function Window({
     };
 
     const handleMaximize = () => {
-        setIsMaximized(!isMaximized);
+        if (isMaximized) {
+            // Restore to previous position and size
+            setIsMaximized(false);
+        } else {
+            // Call snap to maximize
+            onSnap?.(id, 'maximize');
+            setIsMaximized(true);
+        }
         onFocus?.(id);
     };
 
@@ -200,9 +225,9 @@ export default function Window({
             )}
 
             {/* Title Bar - GNOME Style */}
-            <div className="window-titlebar" onMouseDown={handleMouseDown}>
+            <div className="window-titlebar" onMouseDown={handleTitleBarClick}>
                 <div className="window-icon">
-                    <IconComponent size={14} />
+                    <IconComponent size={14} color="var(--text-primary)" />
                 </div>
                 <div className="window-title">{title}</div>
 
@@ -226,7 +251,7 @@ export default function Window({
                                 <path d="M4 4V2H10V8H8" stroke="currentColor" strokeWidth="1" fill="none" />
                             </svg>
                         ) : (
-                            <Square size={12} />
+                            <Maximize2 size={12} />
                         )}
                     </button>
                     <button
