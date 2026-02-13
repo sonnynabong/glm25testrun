@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash, Calculator, Terminal, Calendar, Settings, Cloud, Folder, StickyNote, Grid } from 'lucide-react';
 import Window from './Window';
+import WavesBackground from './apps/WavesBackground';
 import AboutMe from './apps/AboutMe';
 import Resume from './apps/Resume';
 import Skills from './apps/Skills';
@@ -481,6 +482,8 @@ export default function OS() {
                     {notification}
                 </div>
             )}
+
+            <WavesBackground />
 
             <div
                 className="desktop"
