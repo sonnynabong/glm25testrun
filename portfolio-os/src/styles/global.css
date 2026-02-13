@@ -347,7 +347,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent-primary);
+    color: var(--text-primary);
 }
 
 .window-title {
@@ -386,6 +386,35 @@ body {
 
 .window-btn:hover {
     opacity: 0.85;
+}
+
+/* GNOME-style Window Controls */
+.window-btn-gnome {
+    width: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: background-color 0.15s ease;
+}
+
+.window-btn-gnome:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.window-btn-gnome:active {
+    background: var(--bg-active);
+}
+
+.window-btn-close-gnome:hover {
+    background: #e01b24;
+    color: white;
 }
 
 /* Window Content */

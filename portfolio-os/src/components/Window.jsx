@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Folder, User, FileText, Code, Layers } from 'lucide-react';
+import { Folder, User, FileText, Code, Layers, Minus, Square, X } from 'lucide-react';
 
 const iconMap = {
     about: User,
@@ -199,28 +199,43 @@ export default function Window({
                 </>
             )}
 
-            {/* Title Bar */}
+            {/* Title Bar - GNOME Style */}
             <div className="window-titlebar" onMouseDown={handleMouseDown}>
                 <div className="window-icon">
                     <IconComponent size={14} />
                 </div>
                 <div className="window-title">{title}</div>
-                <div className="window-controls">
+
+                {/* GNOME-style window controls - right side */}
+                <div className="window-controls" style={{ marginLeft: 'auto' }}>
                     <button
-                        className="window-btn window-btn-minimize"
+                        className="window-btn-gnome"
                         onClick={handleMinimize}
                         title="Minimize"
-                    />
+                    >
+                        <Minus size={14} />
+                    </button>
                     <button
-                        className="window-btn window-btn-maximize"
+                        className="window-btn-gnome"
                         onClick={handleMaximize}
                         title={isMaximized ? "Restore" : "Maximize"}
-                    />
+                    >
+                        {isMaximized ? (
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <rect x="2" y="4" width="6" height="6" stroke="currentColor" strokeWidth="1" fill="none" />
+                                <path d="M4 4V2H10V8H8" stroke="currentColor" strokeWidth="1" fill="none" />
+                            </svg>
+                        ) : (
+                            <Square size={12} />
+                        )}
+                    </button>
                     <button
-                        className="window-btn window-btn-close"
+                        className="window-btn-gnome window-btn-close-gnome"
                         onClick={handleClose}
                         title="Close"
-                    />
+                    >
+                        <X size={14} />
+                    </button>
                 </div>
             </div>
 
