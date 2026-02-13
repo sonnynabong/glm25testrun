@@ -1,46 +1,44 @@
-/* Import Google Fonts - must be first */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
-
-/* Cyberpunk Portfolio OS - Global Styles */
+/* Linux/GNOME Adwaita-style Portfolio OS - Global Styles */
 @import "tailwindcss";
 
-/* CSS Variables - Cyberpunk Theme */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* CSS Variables - GNOME Adwaita Theme */
 :root {
-    /* Background Colors */
-    --bg-deep: #0a0a0f;
-    --bg-surface: #12121a;
-    --bg-elevated: #1a1a25;
-    --bg-card: #15151f;
+    /* Background Colors - Adwaita Dark */
+    --bg-deep: #1e1e1e;
+    --bg-surface: #242424;
+    --bg-elevated: #2d2d2d;
+    --bg-card: #303030;
+    --bg-hover: #383838;
+    --bg-active: #404040;
 
-    /* Neon Colors */
-    --neon-cyan: #00ffff;
-    --neon-magenta: #ff00ff;
-    --neon-green: #39ff14;
-    --neon-orange: #ff6b35;
-    --neon-yellow: #ffff00;
-
-    /* Glow Effects */
-    --glow-cyan: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3), 0 0 30px rgba(0, 255, 255, 0.1);
-    --glow-magenta: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.3);
-    --glow-green: 0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(57, 255, 20, 0.3);
+    /* GNOME Blue Accent */
+    --accent-primary: #3584e4;
+    --accent-hover: #4591e8;
+    --accent-active: #1c71d8;
 
     /* Text Colors */
     --text-primary: #ffffff;
-    --text-secondary: #a0a0b0;
-    --text-muted: #606070;
+    --text-secondary: #9a9996;
+    --text-muted: #77767b;
 
-    /* Glass Effect */
-    --glass-bg: rgba(18, 18, 26, 0.85);
-    --glass-border: rgba(0, 255, 255, 0.15);
-    --glass-blur: blur(12px);
+    /* Border Colors */
+    --border-light: #3d3d3d;
+    --border-dark: #151515;
+
+    /* Glass Effect - minimal for flat design */
+    --glass-bg: rgba(36, 36, 36, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.1);
 
     /* Typography */
-    --font-display: 'Orbitron', sans-serif;
-    --font-body: 'Rajdhani', sans-serif;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
     /* Spacing */
-    --taskbar-height: 52px;
-    --icon-size: 64px;
+    --taskbar-height: 48px;
+    --icon-size: 56px;
 
     /* Z-Index Layers */
     --z-desktop: 1;
@@ -48,7 +46,6 @@
     --z-window: 100;
     --z-taskbar: 1000;
     --z-boot: 9999;
-    --z-modal: 10000;
 }
 
 /* Reset & Base Styles */
@@ -69,36 +66,36 @@ body {
 body {
     font-family: var(--font-body);
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.5;
     color: var(--text-primary);
     background: var(--bg-deep);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar Styling */
+/* Scrollbar Styling - GNOME Adwaita style */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-surface);
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--neon-cyan);
+    background: #5e5e5e;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--neon-magenta);
+    background: #6e6e6e;
 }
 
 /* Selection */
 ::selection {
-    background: var(--neon-cyan);
-    color: var(--bg-deep);
+    background: var(--accent-primary);
+    color: white;
 }
 
 /* Boot Screen */
@@ -111,17 +108,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    animation: fadeOut 0.5s ease 3s forwards;
-}
-
-.boot-screen::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(ellipse at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
-    pointer-events: none;
+    animation: fadeOut 0.5s ease 2s forwards;
 }
 
 @keyframes fadeOut {
@@ -133,42 +120,21 @@ body {
 
 .boot-logo {
     font-family: var(--font-display);
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--neon-cyan);
-    text-shadow: var(--glow-cyan);
-    margin-bottom: 40px;
-    animation: glitch 2s infinite;
-}
-
-@keyframes glitch {
-
-    0%,
-    90%,
-    100% {
-        text-shadow: var(--glow-cyan);
-        transform: translate(0);
-    }
-
-    92% {
-        text-shadow: -2px 0 var(--neon-magenta), 2px 0 var(--neon-cyan);
-        transform: translate(-2px, 1px);
-    }
-
-    94% {
-        text-shadow: 2px 0 var(--neon-magenta), -2px 0 var(--neon-cyan);
-        transform: translate(2px, -1px);
-    }
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
 }
 
 .boot-terminal {
-    font-family: 'Courier New', monospace;
-    color: var(--neon-green);
-    font-size: 14px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 13px;
+    color: var(--text-secondary);
     text-align: left;
-    max-width: 400px;
+    max-width: 350px;
     opacity: 0;
-    animation: terminalFadeIn 0.5s ease 0.5s forwards;
+    animation: terminalFadeIn 0.3s ease 0.3s forwards;
 }
 
 @keyframes terminalFadeIn {
@@ -181,23 +147,19 @@ body {
     margin: 4px 0;
     overflow: hidden;
     white-space: nowrap;
-    animation: typing 1s steps(30) forwards;
+    animation: typing 0.8s steps(25) forwards;
 }
 
 .boot-line:nth-child(1) {
-    animation-delay: 0.5s;
+    animation-delay: 0.3s;
 }
 
 .boot-line:nth-child(2) {
-    animation-delay: 1s;
+    animation-delay: 0.7s;
 }
 
 .boot-line:nth-child(3) {
-    animation-delay: 1.5s;
-}
-
-.boot-line:nth-child(4) {
-    animation-delay: 2s;
+    animation-delay: 1.1s;
 }
 
 @keyframes typing {
@@ -211,14 +173,14 @@ body {
 }
 
 .boot-progress {
-    width: 300px;
-    height: 4px;
+    width: 250px;
+    height: 3px;
     background: var(--bg-elevated);
     border-radius: 2px;
-    margin-top: 30px;
+    margin-top: 24px;
     overflow: hidden;
     opacity: 0;
-    animation: fadeIn 0.3s ease 2s forwards;
+    animation: fadeIn 0.3s ease 1.5s forwards;
 }
 
 @keyframes fadeIn {
@@ -229,9 +191,9 @@ body {
 
 .boot-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+    background: var(--accent-primary);
     border-radius: 2px;
-    animation: progress 1s ease 2s forwards;
+    animation: progress 0.5s ease 1.5s forwards;
     transform-origin: left;
 }
 
@@ -250,17 +212,13 @@ body {
     position: fixed;
     inset: 0;
     bottom: var(--taskbar-height);
-    background:
-        radial-gradient(ellipse at 30% 20%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 80%, rgba(255, 0, 255, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(57, 255, 20, 0.03) 0%, transparent 70%),
-        var(--bg-deep);
+    background: var(--bg-deep);
     z-index: var(--z-desktop);
-    padding: 20px;
+    padding: 16px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
     align-content: start;
     overflow: hidden;
 }
@@ -271,25 +229,20 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    border-radius: 8px;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.15s ease;
     user-select: none;
 }
 
 .desktop-icon:hover {
-    background: rgba(0, 255, 255, 0.1);
-    transform: scale(1.05);
-}
-
-.desktop-icon:hover .icon-wrapper {
-    filter: drop-shadow(0 0 8px var(--neon-cyan));
+    background: var(--bg-hover);
 }
 
 .desktop-icon:active {
-    transform: scale(0.95);
+    background: var(--bg-active);
 }
 
 .desktop-icon .icon-wrapper {
@@ -298,22 +251,25 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.15s ease;
+}
+
+.desktop-icon:hover .icon-wrapper {
+    transform: scale(1.05);
 }
 
 .desktop-icon .icon-wrapper svg {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
 }
 
 .desktop-icon .icon-label {
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--text-primary);
     text-align: center;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    max-width: 80px;
+    max-width: 72px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -323,28 +279,19 @@ body {
 .window {
     position: fixed;
     background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    box-shadow:
-        0 0 0 1px rgba(0, 255, 255, 0.05),
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     min-width: 400px;
     min-height: 300px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.2s ease;
 }
 
 .window:focus-within {
-    box-shadow:
-        0 0 0 1px var(--neon-cyan),
-        0 0 20px rgba(0, 255, 255, 0.2),
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .window.maximized {
@@ -362,42 +309,26 @@ body {
 }
 
 .window.opening {
-    animation: windowOpen 0.3s ease forwards;
+    animation: windowOpen 0.2s ease forwards;
 }
 
 @keyframes windowOpen {
     from {
-        transform: scale(0.9);
+        transform: scale(0.95);
         opacity: 0;
     }
 
     to {
         transform: scale(1);
         opacity: 1;
-    }
-}
-
-.window.closing {
-    animation: windowClose 0.2s ease forwards;
-}
-
-@keyframes windowClose {
-    from {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    to {
-        transform: scale(0.9);
-        opacity: 0;
     }
 }
 
 /* Window Title Bar */
 .window-titlebar {
-    height: 40px;
-    background: linear-gradient(180deg, rgba(26, 26, 37, 0.95) 0%, rgba(18, 18, 26, 0.95) 100%);
-    border-bottom: 1px solid var(--glass-border);
+    height: 36px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     padding: 0 12px;
@@ -411,12 +342,12 @@ body {
 }
 
 .window-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--neon-cyan);
+    color: var(--accent-primary);
 }
 
 .window-title {
@@ -425,7 +356,6 @@ body {
     font-size: 12px;
     font-weight: 500;
     color: var(--text-primary);
-    letter-spacing: 0.5px;
 }
 
 .window-controls {
@@ -434,55 +364,28 @@ body {
 }
 
 .window-btn {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-}
-
-.window-btn::before {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.window-btn:hover::before {
-    opacity: 1;
+    transition: opacity 0.15s ease;
 }
 
 .window-btn-minimize {
-    background: var(--neon-yellow);
-}
-
-.window-btn-minimize::before {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E") center/50% no-repeat;
+    background: #f5c211;
 }
 
 .window-btn-maximize {
-    background: var(--neon-green);
-}
-
-.window-btn-maximize::before {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3'%3E%3Crect x='5' y='5' width='14' height='14' rx='1'/%3E%3C/svg%3E") center/50% no-repeat;
+    background: #57e389;
 }
 
 .window-btn-close {
-    background: var(--neon-orange);
-}
-
-.window-btn-close::before {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3'%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3Cline x1='6' y1='18' x2='18' y2='6'/%3E%3C/svg%3E") center/50% no-repeat;
+    background: #f66151;
 }
 
 .window-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px currentColor;
+    opacity: 0.85;
 }
 
 /* Window Content */
@@ -490,6 +393,7 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
+    background: var(--bg-elevated);
 }
 
 /* Taskbar */
@@ -499,45 +403,41 @@ body {
     left: 0;
     right: 0;
     height: var(--taskbar-height);
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border-top: 1px solid var(--glass-border);
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-light);
     display: flex;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 12px;
     z-index: var(--z-taskbar);
 }
 
 .taskbar-start {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
-    border-radius: 8px;
+    background: transparent;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transition: background-color 0.15s ease;
 }
 
 .taskbar-start:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+    background: var(--bg-hover);
 }
 
 .taskbar-start svg {
     width: 20px;
     height: 20px;
-    color: var(--bg-deep);
+    color: var(--text-primary);
 }
 
 .taskbar-apps {
     flex: 1;
     display: flex;
-    gap: 8px;
-    margin-left: 16px;
+    gap: 4px;
+    margin-left: 12px;
     overflow-x: auto;
     padding: 4px 0;
 }
@@ -547,28 +447,24 @@ body {
 }
 
 .taskbar-app {
-    height: 36px;
+    height: 34px;
     padding: 0 12px;
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid transparent;
+    background: transparent;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.15s ease;
     white-space: nowrap;
 }
 
 .taskbar-app:hover {
-    background: rgba(0, 255, 255, 0.1);
-    border-color: var(--glass-border);
+    background: var(--bg-hover);
 }
 
 .taskbar-app.active {
-    background: rgba(0, 255, 255, 0.15);
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    background: var(--bg-active);
 }
 
 .taskbar-app.minimized {
@@ -578,7 +474,7 @@ body {
 .taskbar-app svg {
     width: 18px;
     height: 18px;
-    color: var(--neon-cyan);
+    color: var(--text-primary);
 }
 
 .taskbar-app-label {
@@ -595,16 +491,15 @@ body {
     align-items: center;
     gap: 16px;
     padding: 0 12px;
-    height: 36px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
+    height: 34px;
+    background: transparent;
+    border-radius: 6px;
 }
 
 .taskbar-time {
     font-family: var(--font-display);
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-primary);
-    letter-spacing: 1px;
 }
 
 .taskbar-date {
@@ -615,67 +510,10 @@ body {
 /* App Content Styles */
 .app-header {
     text-align: center;
-    margin-bottom: 30px;
-}
-
-.app-title {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--neon-cyan);
-    text-shadow: var(--glow-cyan);
-    margin-bottom: 8px;
-}
-
-.app-subtitle {
-    font-size: 14px;
-    color: var(--text-secondary);
-}
-
-.app-section {
     margin-bottom: 24px;
 }
 
-.app-section-title {
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--neon-magenta);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-/* Profile Card */
-.profile-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
-    background: var(--bg-card);
-    border-radius: 12px;
-    border: 1px solid var(--glass-border);
-}
-
-.profile-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--bg-deep);
-    margin-bottom: 20px;
-    box-shadow: var(--glow-cyan);
-}
-
-.profile-name {
+.app-title {
     font-family: var(--font-display);
     font-size: 24px;
     font-weight: 600;
@@ -683,99 +521,153 @@ body {
     margin-bottom: 4px;
 }
 
-.profile-title {
-    font-size: 16px;
-    color: var(--neon-cyan);
+.app-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.app-section {
+    margin-bottom: 20px;
+}
+
+.app-section-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Profile Card */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 600;
+    color: white;
     margin-bottom: 16px;
 }
 
-/* Timeline */
-.timeline {
-    position: relative;
-    padding-left: 30px;
-}
-
-.timeline::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, var(--neon-cyan), var(--neon-magenta));
-}
-
-.timeline-item {
-    position: relative;
-    padding-bottom: 24px;
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -26px;
-    top: 4px;
-    width: 12px;
-    height: 12px;
-    background: var(--neon-cyan);
-    border-radius: 50%;
-    box-shadow: var(--glow-cyan);
-}
-
-.timeline-date {
-    font-size: 12px;
-    color: var(--neon-cyan);
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.timeline-title {
+.profile-name {
     font-family: var(--font-display);
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 4px;
 }
 
-.timeline-company {
+.profile-title {
     font-size: 14px;
-    color: var(--neon-magenta);
-    margin-bottom: 8px;
+    color: var(--accent-primary);
+    margin-bottom: 12px;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 24px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-light);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 4px;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+}
+
+.timeline-date {
+    font-size: 11px;
+    color: var(--accent-primary);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.timeline-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.timeline-company {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
 }
 
 .timeline-description {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 /* Skills Grid */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
 }
 
 .skill-category {
     background: var(--bg-card);
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid var(--border-light);
 }
 
 .skill-category-title {
     font-family: var(--font-display);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--neon-cyan);
-    margin-bottom: 16px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .skill-item {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .skill-item:last-child {
@@ -783,121 +675,117 @@ body {
 }
 
 .skill-name {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-primary);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     display: flex;
     justify-content: space-between;
 }
 
 .skill-bar {
-    height: 6px;
+    height: 4px;
     background: var(--bg-elevated);
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
 }
 
 .skill-progress {
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
-    border-radius: 3px;
-    transition: width 1s ease;
+    background: var(--accent-primary);
+    border-radius: 2px;
 }
 
 /* Projects Grid */
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
 }
 
 .project-card {
     background: var(--bg-card);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
+    border: 1px solid var(--border-light);
+    transition: background-color 0.15s ease;
 }
 
 .project-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--neon-cyan);
-    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.15);
+    background: var(--bg-hover);
 }
 
 .project-thumbnail {
-    height: 140px;
-    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+    height: 100px;
+    background: var(--bg-surface);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
+    font-size: 32px;
 }
 
 .project-info {
-    padding: 16px;
+    padding: 14px;
 }
 
 .project-title {
     font-family: var(--font-display);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .project-description {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
-    margin-bottom: 12px;
-    line-height: 1.5;
+    margin-bottom: 10px;
+    line-height: 1.4;
 }
 
 .project-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
 }
 
 .project-tag {
     font-size: 10px;
-    padding: 4px 8px;
-    background: rgba(0, 255, 255, 0.1);
-    color: var(--neon-cyan);
+    padding: 3px 6px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
     border-radius: 4px;
 }
 
 /* Contact Links */
 .contact-links {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .contact-link {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
+    gap: 6px;
+    padding: 8px 12px;
     background: var(--bg-card);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
     color: var(--text-primary);
     text-decoration: none;
-    font-size: 13px;
-    transition: all 0.3s ease;
+    font-size: 12px;
+    transition: background-color 0.15s ease;
 }
 
 .contact-link:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    background: var(--bg-hover);
 }
 
 .contact-link svg {
-    width: 16px;
-    height: 16px;
-    color: var(--neon-cyan);
+    width: 14px;
+    height: 14px;
+    color: var(--accent-primary);
 }
 
 /* Resize Handles */
@@ -973,28 +861,28 @@ body {
 /* Mobile Responsive */
 @media (max-width: 768px) {
     :root {
-        --taskbar-height: 48px;
-        --icon-size: 48px;
+        --taskbar-height: 44px;
+        --icon-size: 44px;
     }
 
     .desktop {
-        padding: 10px;
-        gap: 8px;
+        padding: 8px;
+        gap: 6px;
     }
 
     .desktop-icon .icon-wrapper {
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
     }
 
     .desktop-icon .icon-wrapper svg {
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
     }
 
     .desktop-icon .icon-label {
         font-size: 10px;
-        max-width: 60px;
+        max-width: 52px;
     }
 
     .window {
@@ -1011,7 +899,7 @@ body {
     }
 
     .app-title {
-        font-size: 20px;
+        fontSize: '18px';
     }
 
     .projects-grid {

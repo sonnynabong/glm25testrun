@@ -180,7 +180,7 @@ export default function Window({
                 left: isMaximized ? 0 : position.x,
                 top: isMaximized ? 0 : position.y,
                 width: isMaximized ? '100vw' : size.width,
-                height: isMaximized ? 'calc(100vh - 52px)' : size.height,
+                height: isMaximized ? 'calc(100vh - 48px)' : size.height,
                 zIndex: zIndex,
             }}
             onMouseDown={handleFocus}
@@ -202,7 +202,7 @@ export default function Window({
             {/* Title Bar */}
             <div className="window-titlebar" onMouseDown={handleMouseDown}>
                 <div className="window-icon">
-                    <IconComponent size={16} />
+                    <IconComponent size={14} />
                 </div>
                 <div className="window-title">{title}</div>
                 <div className="window-controls">

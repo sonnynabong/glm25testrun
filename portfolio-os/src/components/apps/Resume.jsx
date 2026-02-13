@@ -39,29 +39,29 @@ export default function Resume() {
                 <p className="app-subtitle">My professional journey</p>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <button style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
-                    padding: '12px 24px',
-                    background: 'linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta))',
+                    gap: '6px',
+                    padding: '10px 18px',
+                    background: 'var(--accent-primary)',
                     border: 'none',
-                    borderRadius: '8px',
-                    color: 'var(--bg-deep)',
-                    fontWeight: '600',
+                    borderRadius: '6px',
+                    color: 'white',
+                    fontWeight: '500',
                     cursor: 'pointer',
                     fontFamily: 'var(--font-display)',
-                    fontSize: '13px'
+                    fontSize: '12px'
                 }}>
-                    <Download size={16} />
+                    <Download size={14} />
                     Download PDF
                 </button>
             </div>
 
             <div className="app-section">
-                <h3 className="app-section-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Briefcase size={16} />
+                <h3 className="app-section-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Briefcase size={14} />
                     Work Experience
                 </h3>
                 <div className="timeline">
@@ -77,8 +77,8 @@ export default function Resume() {
             </div>
 
             <div className="app-section">
-                <h3 className="app-section-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <GraduationCap size={16} />
+                <h3 className="app-section-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <GraduationCap size={14} />
                     Education
                 </h3>
                 <div className="timeline">
@@ -97,12 +97,12 @@ export default function Resume() {
                 <h3 className="app-section-title">Professional Summary</h3>
                 <div style={{
                     background: 'var(--bg-card)',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    border: '1px solid var(--glass-border)',
-                    marginBottom: '20px'
+                    padding: '16px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    marginBottom: '16px'
                 }}>
-                    <p style={{ color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+                    <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '13px' }}>
                         Results-driven Full Stack Developer with 5+ years of experience in designing and deploying scalable web applications.
                         Proficient in modern JavaScript frameworks, cloud services, and agile methodologies. Proven track record of delivering
                         high-quality solutions that improve business operations and user engagement.
@@ -112,15 +112,15 @@ export default function Resume() {
 
             <div className="app-section">
                 <h3 className="app-section-title">Certifications</h3>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {['AWS Certified Developer', 'Google Cloud Professional', 'Meta Frontend Expert'].map((cert, index) => (
                         <div key={index} style={{
-                            background: 'rgba(0, 255, 255, 0.1)',
-                            padding: '10px 16px',
-                            borderRadius: '8px',
-                            border: '1px solid var(--neon-cyan)',
-                            color: 'var(--neon-cyan)',
-                            fontSize: '13px',
+                            background: 'var(--bg-surface)',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            border: '1px solid var(--border-light)',
+                            color: 'var(--text-secondary)',
+                            fontSize: '11px',
                             fontFamily: 'var(--font-display)'
                         }}>
                             {cert}

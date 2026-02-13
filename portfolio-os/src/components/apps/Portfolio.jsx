@@ -1,58 +1,67 @@
 import React from 'react';
-import { ExternalLink, Github, Star, Wrench } from 'lucide-react';
+import { ExternalLink, Github, Star, Monitor } from 'lucide-react';
 
 export default function Portfolio() {
-    const featuredProjects = [
+    const projects = [
         {
             title: 'E-Commerce Platform',
             subtitle: 'Full-Stack Development',
-            description: `Built a comprehensive e-commerce platform serving 10,000+ monthly active users. Implemented secure payment processing with Stripe, real-time inventory management, and an intuitive admin dashboard for business owners.
-
-Key features include:
-• User authentication and authorization with JWT
-• Shopping cart with local storage persistence
-• Order tracking and history
-• Product search with filters and sorting
-• Responsive design for all devices
-• Performance optimization achieving 90+ Lighthouse score`,
-            tech: ['React', 'Node.js', 'PostgreSQL', 'Stripe', 'Redis', 'Docker'],
+            description: `Built a comprehensive e-commerce platform serving 10,000+ monthly active users. Implemented secure payment processing with Stripe, real-time inventory management, and an admin dashboard.`,
+            tech: ['React', 'Node.js', 'PostgreSQL', 'Stripe', 'Docker'],
             stats: { stars: 245, forks: 67, views: 12000 },
             live: true,
-            github: true
+            github: true,
+            image: '🛒'
         },
         {
             title: 'Social Analytics Dashboard',
             subtitle: 'Data Visualization',
-            description: `Developed a real-time analytics dashboard for social media management companies. The platform processes millions of data points daily and presents insights through interactive visualizations.
-
-Key features include:
-• Real-time data streaming with WebSockets
-• Custom D3.js charts and graphs
-• Customizable dashboard layouts
-• Export reports in multiple formats
-• Team collaboration features
-• API for third-party integrations`,
-            tech: ['Next.js', 'TypeScript', 'D3.js', 'PostgreSQL', 'AWS', 'GraphQL'],
+            description: `Developed a real-time analytics dashboard for social media management. Processes millions of data points daily with interactive visualizations.`,
+            tech: ['Next.js', 'TypeScript', 'D3.js', 'PostgreSQL', 'AWS'],
             stats: { stars: 189, forks: 43, views: 8500 },
             live: true,
-            github: true
+            github: true,
+            image: '📊'
         },
         {
             title: 'Healthcare Management System',
             subtitle: 'Enterprise Application',
-            description: `Created a HIPAA-compliant healthcare management system for clinics and hospitals. The application streamlines patient records, appointments, and billing processes.
-
-Key features include:
-• Electronic Health Records (EHR)
-• Appointment scheduling with calendar view
-• Patient communication portal
-• Insurance billing integration
-• Role-based access control
-• Audit logging for compliance`,
-            tech: ['Vue.js', 'Python', 'MongoDB', 'FHIR', 'Kubernetes', 'AWS'],
+            description: `Created a HIPAA-compliant healthcare management system for clinics. Streamlines patient records, appointments, and billing processes.`,
+            tech: ['Vue.js', 'Python', 'MongoDB', 'Kubernetes', 'AWS'],
             stats: { stars: 312, forks: 89, views: 15000 },
             live: false,
-            github: true
+            github: true,
+            image: '🏥'
+        },
+        {
+            title: 'Weather Application',
+            subtitle: 'Mobile-First Web App',
+            description: `Beautiful weather app with location-based forecasts, interactive maps, and severe weather alerts.`,
+            tech: ['React', 'OpenWeather API', 'Leaflet', 'PWA'],
+            stats: { stars: 156, forks: 34, views: 9800 },
+            live: true,
+            github: true,
+            image: '🌤️'
+        },
+        {
+            title: 'Real-time Chat Application',
+            subtitle: 'Communication Platform',
+            description: `End-to-end encrypted messaging app with group chats, file sharing, and video calls.`,
+            tech: ['React', 'WebRTC', 'Socket.io', 'MongoDB'],
+            stats: { stars: 278, forks: 56, views: 11000 },
+            live: true,
+            github: true,
+            image: '💬'
+        },
+        {
+            title: 'Task Management App',
+            subtitle: 'Productivity Tool',
+            description: `Collaborative project management tool with Kanban boards, time tracking, and team communication.`,
+            tech: ['Vue.js', 'Firebase', 'Socket.io', 'Redux'],
+            stats: { stars: 203, forks: 45, views: 7500 },
+            live: true,
+            github: false,
+            image: '✅'
         }
     ];
 
@@ -60,98 +69,157 @@ Key features include:
         <div className="app-content">
             <div className="app-header">
                 <h1 className="app-title">Portfolio</h1>
-                <p className="app-subtitle">Featured projects in detail</p>
+                <p className="app-subtitle">Featured projects and case studies</p>
             </div>
 
-            {featuredProjects.map((project, index) => (
-                <div key={index} className="app-section" style={{ marginBottom: '32px' }}>
+            {/* Stats Overview */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
+                <div style={{
+                    background: 'var(--bg-card)',
+                    padding: '14px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    textAlign: 'center'
+                }}>
+                    <div style={{ fontSize: '20px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: '600' }}>20+</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Projects</div>
+                </div>
+                <div style={{
+                    background: 'var(--bg-card)',
+                    padding: '14px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    textAlign: 'center'
+                }}>
+                    <div style={{ fontSize: '20px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: '600' }}>50+</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Clients</div>
+                </div>
+                <div style={{
+                    background: 'var(--bg-card)',
+                    padding: '14px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    textAlign: 'center'
+                }}>
+                    <div style={{ fontSize: '20px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: '600' }}>5+</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Years</div>
+                </div>
+                <div style={{
+                    background: 'var(--bg-card)',
+                    padding: '14px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    textAlign: 'center'
+                }}>
+                    <div style={{ fontSize: '20px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: '600' }}>100%</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Satisfaction</div>
+                </div>
+            </div>
+
+            {/* Projects List */}
+            {projects.map((project, index) => (
+                <div key={index} className="app-section" style={{ marginBottom: '20px' }}>
                     <div style={{
                         background: 'var(--bg-card)',
-                        borderRadius: '16px',
-                        border: '1px solid var(--glass-border)',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border-light)',
                         overflow: 'hidden'
                     }}>
                         {/* Project Header */}
                         <div style={{
-                            padding: '24px',
-                            borderBottom: '1px solid var(--glass-border)',
-                            background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05))'
+                            padding: '16px',
+                            borderBottom: '1px solid var(--border-light)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '14px'
                         }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                <div>
-                                    <h3 style={{
-                                        fontFamily: 'var(--font-display)',
-                                        fontSize: '20px',
-                                        fontWeight: '600',
-                                        color: 'var(--text-primary)',
-                                        marginBottom: '4px'
-                                    }}>
-                                        {project.title}
-                                    </h3>
-                                    <p style={{ color: 'var(--neon-cyan)', fontSize: '13px' }}>{project.subtitle}</p>
-                                </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    {project.github && (
-                                        <button style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '6px',
-                                            padding: '8px 16px',
-                                            background: 'rgba(255, 0, 255, 0.1)',
-                                            border: '1px solid var(--neon-magenta)',
-                                            borderRadius: '8px',
-                                            color: 'var(--neon-magenta)',
-                                            fontSize: '12px',
-                                            cursor: 'pointer'
-                                        }}>
-                                            <Github size={14} />
-                                            Source
-                                        </button>
-                                    )}
-                                    {project.live && (
-                                        <button style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '6px',
-                                            padding: '8px 16px',
-                                            background: 'rgba(0, 255, 255, 0.1)',
-                                            border: '1px solid var(--neon-cyan)',
-                                            borderRadius: '8px',
-                                            color: 'var(--neon-cyan)',
-                                            fontSize: '12px',
-                                            cursor: 'pointer'
-                                        }}>
-                                            <ExternalLink size={14} />
-                                            Live Demo
-                                        </button>
-                                    )}
-                                </div>
+                            <div style={{
+                                width: '48px',
+                                height: '48px',
+                                background: 'var(--bg-surface)',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '22px'
+                            }}>
+                                {project.image}
                             </div>
+                            <div style={{ flex: 1 }}>
+                                <h3 style={{
+                                    fontFamily: 'var(--font-display)',
+                                    fontSize: '15px',
+                                    fontWeight: '600',
+                                    color: 'var(--text-primary)',
+                                    marginBottom: '2px'
+                                }}>
+                                    {project.title}
+                                </h3>
+                                <p style={{ color: 'var(--accent-primary)', fontSize: '11px' }}>{project.subtitle}</p>
+                            </div>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                                {project.github && (
+                                    <button style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        padding: '6px 10px',
+                                        background: 'var(--bg-surface)',
+                                        border: '1px solid var(--border-light)',
+                                        borderRadius: '6px',
+                                        color: 'var(--text-secondary)',
+                                        fontSize: '11px',
+                                        cursor: 'pointer',
+                                        fontFamily: 'var(--font-display)'
+                                    }}>
+                                        <Github size={12} />
+                                        Code
+                                    </button>
+                                )}
+                                {project.live && (
+                                    <button style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        padding: '6px 10px',
+                                        background: 'var(--accent-primary)',
+                                        border: 'none',
+                                        borderRadius: '6px',
+                                        color: 'white',
+                                        fontSize: '11px',
+                                        cursor: 'pointer',
+                                        fontFamily: 'var(--font-display)'
+                                    }}>
+                                        <ExternalLink size={12} />
+                                        Live
+                                    </button>
+                                )}
+                            </div>
+                        </div>
 
-                            {/* Stats */}
-                            <div style={{ display: 'flex', gap: '20px', marginTop: '16px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px' }}>
-                                    <Star size={14} style={{ color: 'var(--neon-yellow)' }} />
-                                    {project.stats.stars} stars
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px' }}>
-                                    <Code size={14} style={{ color: 'var(--neon-green)' }} />
-                                    {project.stats.forks} forks
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px' }}>
-                                    <Wrench size={14} style={{ color: 'var(--neon-cyan)' }} />
-                                    {project.stats.views.toLocaleString()} views
-                                </div>
+                        {/* Project Stats */}
+                        <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border-light)', display: 'flex', gap: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+                                <Star size={12} />
+                                {project.stats.stars} stars
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+                                <Github size={12} />
+                                {project.stats.forks} forks
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+                                <Monitor size={12} />
+                                {project.stats.views.toLocaleString()} views
                             </div>
                         </div>
 
                         {/* Project Description */}
-                        <div style={{ padding: '24px' }}>
+                        <div style={{ padding: '16px' }}>
                             <p style={{
                                 color: 'var(--text-secondary)',
-                                lineHeight: '1.8',
-                                whiteSpace: 'pre-line',
-                                marginBottom: '20px'
+                                lineHeight: '1.6',
+                                marginBottom: '12px',
+                                fontSize: '12px'
                             }}>
                                 {project.description}
                             </p>
@@ -159,23 +227,21 @@ Key features include:
                             {/* Tech Stack */}
                             <div>
                                 <span style={{
-                                    fontSize: '11px',
-                                    color: 'var(--neon-magenta)',
+                                    fontSize: '10px',
+                                    color: 'var(--text-muted)',
                                     fontFamily: 'var(--font-display)',
-                                    letterSpacing: '1px',
                                     textTransform: 'uppercase'
                                 }}>
-                                    Tech Stack
+                                    Technologies
                                 </span>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
                                     {project.tech.map((tech, techIndex) => (
                                         <span key={techIndex} style={{
-                                            background: 'var(--bg-elevated)',
-                                            padding: '6px 12px',
-                                            borderRadius: '6px',
-                                            border: '1px solid var(--glass-border)',
-                                            color: 'var(--text-primary)',
-                                            fontSize: '12px'
+                                            background: 'var(--bg-surface)',
+                                            padding: '4px 8px',
+                                            borderRadius: '4px',
+                                            color: 'var(--text-secondary)',
+                                            fontSize: '10px'
                                         }}>
                                             {tech}
                                         </span>
@@ -187,29 +253,43 @@ Key features include:
                 </div>
             ))}
 
+            {/* Call to Action */}
             <div className="app-section">
-                <h3 className="app-section-title">Open Source Contributions</h3>
                 <div style={{
                     background: 'var(--bg-card)',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    border: '1px solid var(--glass-border)'
+                    padding: '24px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    textAlign: 'center'
                 }}>
-                    <p style={{ color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: '16px' }}>
-                        I've contributed to various open source projects including React, Vue, and several popular libraries.
-                        Check out my GitHub profile to see more of my contributions.
+                    <h3 style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '16px',
+                        color: 'var(--text-primary)',
+                        marginBottom: '8px'
+                    }}>
+                        Interested in working together?
+                    </h3>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', fontSize: '13px' }}>
+                        I'm always open to discussing new projects and opportunities.
                     </p>
-                    <a href="#" style={{
+                    <button style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        color: 'var(--neon-cyan)',
-                        textDecoration: 'none',
-                        fontSize: '14px'
+                        gap: '6px',
+                        padding: '10px 20px',
+                        background: 'var(--accent-primary)',
+                        border: 'none',
+                        borderRadius: '6px',
+                        color: 'white',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '12px'
                     }}>
-                        <Github size={16} />
-                        View GitHub Profile
-                    </a>
+                        <ExternalLink size={14} />
+                        Get In Touch
+                    </button>
                 </div>
             </div>
         </div>

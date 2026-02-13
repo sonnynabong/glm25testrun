@@ -5,7 +5,7 @@ export default function Skills() {
     const skills = [
         {
             category: 'Frontend',
-            icon: <Palette size={16} />,
+            icon: <Palette size={14} />,
             items: [
                 { name: 'React / Next.js', level: 95 },
                 { name: 'TypeScript', level: 90 },
@@ -16,7 +16,7 @@ export default function Skills() {
         },
         {
             category: 'Backend',
-            icon: <Database size={16} />,
+            icon: <Database size={14} />,
             items: [
                 { name: 'Node.js', level: 90 },
                 { name: 'Python', level: 85 },
@@ -27,7 +27,7 @@ export default function Skills() {
         },
         {
             category: 'DevOps',
-            icon: <Cloud size={16} />,
+            icon: <Cloud size={14} />,
             items: [
                 { name: 'Docker', level: 85 },
                 { name: 'AWS', level: 80 },
@@ -38,7 +38,7 @@ export default function Skills() {
         },
         {
             category: 'Tools',
-            icon: <Terminal size={16} />,
+            icon: <Terminal size={14} />,
             items: [
                 { name: 'Git', level: 95 },
                 { name: 'VS Code', level: 95 },
@@ -67,7 +67,7 @@ export default function Skills() {
                             <div key={skillIndex} className="skill-item">
                                 <div className="skill-name">
                                     <span>{skill.name}</span>
-                                    <span style={{ color: 'var(--neon-cyan)' }}>{skill.level}%</span>
+                                    <span style={{ color: 'var(--text-secondary)' }}>{skill.level}%</span>
                                 </div>
                                 <div className="skill-bar">
                                     <div
@@ -81,9 +81,9 @@ export default function Skills() {
                 ))}
             </div>
 
-            <div className="app-section" style={{ marginTop: '24px' }}>
+            <div className="app-section" style={{ marginTop: '20px' }}>
                 <h3 className="app-section-title">Additional Skills</h3>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                     {[
                         'Agile / Scrum', 'REST APIs', 'Microservices', 'TDD',
                         'System Design', 'UI/UX', 'Performance Optimization',
@@ -91,11 +91,11 @@ export default function Skills() {
                     ].map((skill, index) => (
                         <div key={index} style={{
                             background: 'var(--bg-card)',
-                            padding: '8px 14px',
-                            borderRadius: '20px',
-                            border: '1px solid var(--glass-border)',
+                            padding: '6px 10px',
+                            borderRadius: '16px',
+                            border: '1px solid var(--border-light)',
                             color: 'var(--text-secondary)',
-                            fontSize: '12px'
+                            fontSize: '11px'
                         }}>
                             {skill}
                         </div>
@@ -105,20 +105,20 @@ export default function Skills() {
 
             <div className="app-section">
                 <h3 className="app-section-title">Currently Learning</h3>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {['Rust', 'WebAssembly', 'AI/ML'].map((skill, index) => (
                         <div key={index} style={{
-                            background: 'rgba(255, 0, 255, 0.1)',
-                            padding: '10px 16px',
-                            borderRadius: '8px',
-                            border: '1px solid var(--neon-magenta)',
-                            color: 'var(--neon-magenta)',
-                            fontSize: '13px',
+                            background: 'var(--bg-surface)',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            border: '1px solid var(--border-light)',
+                            color: 'var(--text-secondary)',
+                            fontSize: '11px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '8px'
+                            gap: '6px'
                         }}>
-                            <Box size={14} />
+                            <Box size={12} />
                             {skill}
                         </div>
                     ))}

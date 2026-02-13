@@ -52,7 +52,7 @@ export default function ProjectsGallery() {
                 {projects.map((project, index) => (
                     <div key={index} className="project-card">
                         <div className="project-thumbnail">
-                            <span style={{ fontSize: '48px' }}>{project.image}</span>
+                            <span style={{ fontSize: '32px' }}>{project.image}</span>
                         </div>
                         <div className="project-info">
                             <h4 className="project-title">{project.title}</h4>
@@ -62,37 +62,35 @@ export default function ProjectsGallery() {
                                     <span key={tagIndex} className="project-tag">{tag}</span>
                                 ))}
                             </div>
-                            <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                            <div style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
                                 <button style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '4px',
-                                    padding: '6px 12px',
-                                    background: 'rgba(0, 255, 255, 0.1)',
-                                    border: '1px solid var(--neon-cyan)',
-                                    borderRadius: '6px',
-                                    color: 'var(--neon-cyan)',
-                                    fontSize: '11px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease'
+                                    padding: '5px 10px',
+                                    background: 'var(--bg-surface)',
+                                    border: '1px solid var(--border-light)',
+                                    borderRadius: '4px',
+                                    color: 'var(--text-secondary)',
+                                    fontSize: '10px',
+                                    cursor: 'pointer'
                                 }}>
-                                    <Eye size={12} />
+                                    <Eye size={10} />
                                     View
                                 </button>
                                 <button style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '4px',
-                                    padding: '6px 12px',
-                                    background: 'rgba(255, 0, 255, 0.1)',
-                                    border: '1px solid var(--neon-magenta)',
-                                    borderRadius: '6px',
-                                    color: 'var(--neon-magenta)',
-                                    fontSize: '11px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease'
+                                    padding: '5px 10px',
+                                    background: 'var(--bg-surface)',
+                                    border: '1px solid var(--border-light)',
+                                    borderRadius: '4px',
+                                    color: 'var(--text-secondary)',
+                                    fontSize: '10px',
+                                    cursor: 'pointer'
                                 }}>
-                                    <Github size={12} />
+                                    <Github size={10} />
                                     Code
                                 </button>
                             </div>
@@ -101,9 +99,9 @@ export default function ProjectsGallery() {
                 ))}
             </div>
 
-            <div className="app-section">
+            <div className="app-section" style={{ marginTop: '20px' }}>
                 <h3 className="app-section-title">Project Stats</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                     {[
                         { label: 'Total Projects', value: '20+' },
                         { label: 'Happy Clients', value: '15+' },
@@ -111,21 +109,21 @@ export default function ProjectsGallery() {
                     ].map((stat, index) => (
                         <div key={index} style={{
                             background: 'var(--bg-card)',
-                            padding: '20px',
-                            borderRadius: '12px',
-                            border: '1px solid var(--glass-border)',
+                            padding: '16px',
+                            borderRadius: '8px',
+                            border: '1px solid var(--border-light)',
                             textAlign: 'center'
                         }}>
                             <div style={{
                                 fontFamily: 'var(--font-display)',
-                                fontSize: '28px',
-                                fontWeight: '700',
-                                color: 'var(--neon-cyan)',
-                                marginBottom: '4px'
+                                fontSize: '22px',
+                                fontWeight: '600',
+                                color: 'var(--text-primary)',
+                                marginBottom: '2px'
                             }}>
                                 {stat.value}
                             </div>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>
                                 {stat.label}
                             </div>
                         </div>

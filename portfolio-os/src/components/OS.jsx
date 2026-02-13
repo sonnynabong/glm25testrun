@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { User, FileText, Code, Layers, Folder, Grid3X3 } from 'lucide-react';
+import { User, FileText, Code, Layers, Folder, Grid3X3, Briefcase } from 'lucide-react';
 import Window from './Window';
 import AboutMe from './apps/AboutMe';
 import Resume from './apps/Resume';
@@ -12,7 +12,7 @@ const apps = [
     { id: 'resume', title: 'Resume', icon: 'resume', iconComponent: FileText },
     { id: 'skills', title: 'Skills', icon: 'skills', iconComponent: Code },
     { id: 'projects', title: 'Projects', icon: 'projects', iconComponent: Layers },
-    { id: 'portfolio', title: 'Portfolio', icon: 'portfolio', iconComponent: Folder },
+    { id: 'portfolio', title: 'Portfolio', icon: 'portfolio', iconComponent: Briefcase },
 ];
 
 const appComponents = {
@@ -175,12 +175,12 @@ export default function OS() {
                     <div
                         key={app.id}
                         className="desktop-icon"
-                        onDoubleClick={() => openWindow(app.id)}
+                        onClick={() => openWindow(app.id)}
                     >
                         <div className="icon-wrapper">
                             <app.iconComponent
-                                size={40}
-                                color="var(--neon-cyan)"
+                                size={36}
+                                color="var(--text-primary)"
                                 strokeWidth={1.5}
                             />
                         </div>
