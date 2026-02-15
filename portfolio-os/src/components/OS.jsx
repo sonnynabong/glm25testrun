@@ -556,9 +556,10 @@ export default function OS() {
                     style={{
                         position: 'fixed',
                         inset: 0,
-                        background: wallpapers['gradient-5'],
+                        background: 'var(--bg-deep)',
                         zIndex: 99999,
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
@@ -568,9 +569,25 @@ export default function OS() {
                         setIdleTime(0);
                     }}
                 >
-                    <div style={{ textAlign: 'center', color: 'white' }}>
-                        <div style={{ fontSize: '72px', marginBottom: '16px' }}>Portfolio OS</div>
-                        <div style={{ fontSize: '18px', opacity: 0.7 }}>Click anywhere to exit</div>
+                    <div style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '48px',
+                        fontWeight: 600,
+                        color: 'var(--text-primary)',
+                        marginBottom: '30px',
+                        letterSpacing: '-0.5px',
+                    }}>
+                        PORTFOLIO OS
+                    </div>
+                    <div style={{
+                        fontFamily: "'Monaco', 'Consolas', monospace",
+                        fontSize: '13px',
+                        color: 'var(--text-secondary)',
+                        textAlign: 'left',
+                        maxWidth: '350px',
+                    }}>
+                        <div style={{ margin: '4px 0', opacity: 0.7 }}>System idle...</div>
+                        <div style={{ margin: '4px 0', opacity: 0.5 }}>Press any key or click to resume</div>
                     </div>
                 </div>
             )}
