@@ -58,6 +58,7 @@ export default function Settings() {
                     console.error('Failed to load settings:', e);
                 }
             }
+            settings.backgroundType = 'prismatic';
             if (!settings.prismaticBurstSettings) {
                 settings.prismaticBurstSettings = {
                     enabled: true,
@@ -76,6 +77,20 @@ export default function Settings() {
             localStorage.setItem('os-settings', JSON.stringify(settings));
             // Trigger a custom event to notify OS.jsx to reload settings
             window.dispatchEvent(new Event('prismatic-enabled'));
+        } else if (wallpaper.startsWith('gradient-')) {
+            // When a gradient wallpaper is selected, default to waves
+            const savedSettings = localStorage.getItem('os-settings');
+            let settings = {};
+            if (savedSettings) {
+                try {
+                    settings = JSON.parse(savedSettings);
+                } catch (e) {
+                    console.error('Failed to load settings:', e);
+                }
+            }
+            settings.backgroundType = 'waves';
+            localStorage.setItem('os-settings', JSON.stringify(settings));
+            window.dispatchEvent(new Event('background-changed'));
         }
 
         // Apply accent color

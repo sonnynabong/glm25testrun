@@ -125,6 +125,7 @@ export default function OS() {
     const [showScreensaver, setShowScreensaver] = useState(false);
     const [idleTime, setIdleTime] = useState(0);
     const [showBackgroundMenu, setShowBackgroundMenu] = useState(false);
+    const [backgroundType, setBackgroundType] = useState('waves'); // 'none', 'waves', 'prismatic'
     const [waveSettings, setWaveSettings] = useState({
         showWaves: true,
         lineColor: '#3584e4',
@@ -167,6 +168,16 @@ export default function OS() {
                 if (settings.wallpaper) setWallpaper(settings.wallpaper);
                 if (settings.waveSettings) setWaveSettings(settings.waveSettings);
                 if (settings.prismaticBurstSettings) setPrismaticBurstSettings(settings.prismaticBurstSettings);
+                // Determine background type from settings
+                if (settings.backgroundType) {
+                    setBackgroundType(settings.backgroundType);
+                } else if (settings.prismaticBurstSettings?.enabled) {
+                    setBackgroundType('prismatic');
+                } else if (settings.waveSettings?.showWaves) {
+                    setBackgroundType('waves');
+                } else {
+                    setBackgroundType('waves'); // Default to waves
+                }
             } catch (e) {
                 console.error('Failed to load settings:', e);
             }
@@ -181,15 +192,38 @@ export default function OS() {
                     if (settings.prismaticBurstSettings) {
                         setPrismaticBurstSettings(settings.prismaticBurstSettings);
                     }
+                    if (settings.backgroundType) {
+                        setBackgroundType(settings.backgroundType);
+                    }
                 } catch (e) {
                     console.error('Failed to load settings:', e);
                 }
             }
         };
+
+        const handleBackgroundChanged = () => {
+            const saved = localStorage.getItem('os-settings');
+            if (saved) {
+                try {
+                    const settings = JSON.parse(saved);
+                    if (settings.backgroundType) {
+                        setBackgroundType(settings.backgroundType);
+                    }
+                    if (settings.waveSettings) {
+                        setWaveSettings(settings.waveSettings);
+                    }
+                } catch (e) {
+                    console.error('Failed to load settings:', e);
+                }
+            }
+        };
+
         window.addEventListener('prismatic-enabled', handlePrismaticEnabled);
+        window.addEventListener('background-changed', handleBackgroundChanged);
 
         return () => {
             window.removeEventListener('prismatic-enabled', handlePrismaticEnabled);
+            window.removeEventListener('background-changed', handleBackgroundChanged);
         };
 
         // Load windows
@@ -228,21 +262,6 @@ export default function OS() {
         return () => clearInterval(idleInterval);
     }, [idleTime, showScreensaver]);
 
-    // Save wave settings when they change
-    useEffect(() => {
-        const savedSettings = localStorage.getItem('os-settings');
-        let settings = {};
-        if (savedSettings) {
-            try {
-                settings = JSON.parse(savedSettings);
-            } catch (e) {
-                console.error('Failed to load settings:', e);
-            }
-        }
-        settings.waveSettings = waveSettings;
-        localStorage.setItem('os-settings', JSON.stringify(settings));
-    }, [waveSettings]);
-
     // Save prismatic burst settings when they change
     useEffect(() => {
         const savedSettings = localStorage.getItem('os-settings');
@@ -255,8 +274,25 @@ export default function OS() {
             }
         }
         settings.prismaticBurstSettings = prismaticBurstSettings;
+        settings.backgroundType = backgroundType;
         localStorage.setItem('os-settings', JSON.stringify(settings));
-    }, [prismaticBurstSettings]);
+    }, [prismaticBurstSettings, backgroundType]);
+
+    // Save wave settings when they change
+    useEffect(() => {
+        const savedSettings = localStorage.getItem('os-settings');
+        let settings = {};
+        if (savedSettings) {
+            try {
+                settings = JSON.parse(savedSettings);
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+        settings.waveSettings = waveSettings;
+        settings.backgroundType = backgroundType;
+        localStorage.setItem('os-settings', JSON.stringify(settings));
+    }, [waveSettings, backgroundType]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -560,7 +596,7 @@ export default function OS() {
                 </div>
             )}
 
-            {waveSettings.showWaves && (
+            {backgroundType === 'waves' && (
                 <WavesBackground
                     lineColor={waveSettings.lineColor}
                     waveSpeedX={waveSettings.waveSpeedX}
@@ -570,7 +606,7 @@ export default function OS() {
                 />
             )}
 
-            {prismaticBurstSettings.enabled && (
+            {backgroundType === 'prismatic' && (
                 <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
                     <PrismaticBurst
                         intensity={prismaticBurstSettings.intensity}
@@ -793,86 +829,66 @@ export default function OS() {
                         Background Options
                     </div>
 
-                    {/* Toggle Waves */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                        <span style={{ color: 'var(--text-primary)', fontSize: '13px' }}>Show Waves</span>
-                        <button
-                            onClick={() => setWaveSettings(s => ({ ...s, showWaves: !s.showWaves }))}
-                            style={{
-                                width: '44px',
-                                height: '24px',
-                                borderRadius: '12px',
-                                border: 'none',
-                                background: waveSettings.showWaves ? 'var(--accent-primary)' : 'var(--bg-hover)',
-                                cursor: 'pointer',
-                                position: 'relative',
-                            }}
-                        >
-                            <div style={{
-                                width: '18px',
-                                height: '18px',
-                                borderRadius: '50%',
-                                background: 'white',
-                                position: 'absolute',
-                                top: '3px',
-                                left: waveSettings.showWaves ? '23px' : '3px',
-                                transition: 'left 0.2s ease',
-                            }} />
-                        </button>
+                    {/* Background Type Selector */}
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                        {[
+                            { id: 'none', label: 'None', icon: '' },
+                            { id: 'waves', label: 'Waves', icon: '' },
+                            { id: 'prismatic', label: 'Prismatic', icon: '' },
+                        ].map((type) => (
+                            <button
+                                key={type.id}
+                                onClick={() => setBackgroundType(type.id)}
+                                style={{
+                                    flex: 1,
+                                    padding: '10px 8px',
+                                    borderRadius: '8px',
+                                    border: backgroundType === type.id ? '2px solid var(--accent-primary)' : '2px solid var(--border-light)',
+                                    background: backgroundType === type.id ? 'var(--accent-primary)' : 'var(--bg-hover)',
+                                    color: backgroundType === type.id ? 'white' : 'var(--text-primary)',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    fontWeight: '500',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    transition: 'all 0.2s ease',
+                                }}
+                            >
+                                <span>{type.label}</span>
+                            </button>
+                        ))}
                     </div>
 
-                    {/* Color Picker */}
-                    <div style={{ marginBottom: '16px' }}>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '8px' }}>Wave Color</span>
-                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            {['#3584e4', '#e01b24', '#33d17a', '#f6d32d', '#ff7800', '#9141ac', '#ffffff', '#1c71d8'].map(color => (
-                                <button
-                                    key={color}
-                                    onClick={() => setWaveSettings(s => ({ ...s, lineColor: color }))}
-                                    style={{
-                                        width: '28px',
-                                        height: '28px',
-                                        borderRadius: '6px',
-                                        border: waveSettings.lineColor === color ? '2px solid var(--text-primary)' : '2px solid transparent',
-                                        background: color,
-                                        cursor: 'pointer',
-                                    }}
-                                />
-                            ))}
+                    {/* Waves Settings */}
+                    {backgroundType === 'waves' && (
+                        <div style={{ padding: '12px', background: 'var(--bg-hover)', borderRadius: '8px' }}>
+                            <div style={{ marginBottom: '12px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '8px' }}>Wave Color</span>
+                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                    {['#3584e4', '#e01b24', '#33d17a', '#f6d32d', '#ff7800', '#9141ac', '#ffffff', '#1c71d8'].map(color => (
+                                        <button
+                                            key={color}
+                                            onClick={() => setWaveSettings(s => ({ ...s, lineColor: color }))}
+                                            style={{
+                                                width: '28px',
+                                                height: '28px',
+                                                borderRadius: '6px',
+                                                border: waveSettings.lineColor === color ? '2px solid var(--text-primary)' : '2px solid transparent',
+                                                background: color,
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Prismatic Burst Toggle */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-light)' }}>
-                        <span style={{ color: 'var(--text-primary)', fontSize: '13px' }}>Prismatic Burst</span>
-                        <button
-                            onClick={() => setPrismaticBurstSettings(s => ({ ...s, enabled: !s.enabled }))}
-                            style={{
-                                width: '44px',
-                                height: '24px',
-                                borderRadius: '12px',
-                                border: 'none',
-                                background: prismaticBurstSettings.enabled ? 'var(--accent-primary)' : 'var(--bg-hover)',
-                                cursor: 'pointer',
-                                position: 'relative',
-                            }}
-                        >
-                            <div style={{
-                                width: '18px',
-                                height: '18px',
-                                borderRadius: '50%',
-                                background: 'white',
-                                position: 'absolute',
-                                top: '3px',
-                                left: prismaticBurstSettings.enabled ? '23px' : '3px',
-                                transition: 'left 0.2s ease',
-                            }} />
-                        </button>
-                    </div>
+                    )}
 
                     {/* Prismatic Burst Settings */}
-                    {prismaticBurstSettings.enabled && (
-                        <div style={{ marginBottom: '16px', padding: '12px', background: 'var(--bg-hover)', borderRadius: '8px' }}>
+                    {backgroundType === 'prismatic' && (
+                        <div style={{ padding: '12px', background: 'var(--bg-hover)', borderRadius: '8px' }}>
                             {/* Animation Type */}
                             <div style={{ marginBottom: '12px' }}>
                                 <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Animation</span>
@@ -967,16 +983,30 @@ export default function OS() {
                         </div>
                     )}
 
-                    {/* Reset button */}
+                    {/* Close button */}
                     <button
-                        onClick={() => setWaveSettings({
-                            showWaves: true,
-                            lineColor: '#3584e4',
-                            waveSpeedX: 0.0125,
-                            waveSpeedY: 0.01,
-                            waveAmpX: 40,
-                            waveAmpY: 20,
-                        })}
+                        onClick={() => {
+                            setBackgroundType('waves');
+                            setWaveSettings({
+                                showWaves: true,
+                                lineColor: '#3584e4',
+                                waveSpeedX: 0.0125,
+                                waveSpeedY: 0.01,
+                                waveAmpX: 40,
+                                waveAmpY: 20,
+                            });
+                            setPrismaticBurstSettings({
+                                enabled: false,
+                                intensity: 2,
+                                speed: 0.5,
+                                animationType: 'rotate3d',
+                                colors: ['#ff007a', '#4d3dff', '#ffffff'],
+                                distort: 0,
+                                hoverDampness: 0.25,
+                                rayCount: 0,
+                                mixBlendMode: 'lighten',
+                            });
+                        }}
                         style={{
                             width: '100%',
                             padding: '10px',
@@ -986,7 +1016,7 @@ export default function OS() {
                             color: 'var(--text-primary)',
                             cursor: 'pointer',
                             fontWeight: '500',
-                            marginBottom: '8px',
+                            marginTop: '12px',
                         }}
                     >
                         Reset to Default
