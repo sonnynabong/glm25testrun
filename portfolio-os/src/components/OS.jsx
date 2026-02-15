@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash, Calculator, Terminal, Calendar, Settings, Cloud, Folder, StickyNote, Grid } from 'lucide-react';
 import Window from './Window';
 import WavesBackground from './apps/WavesBackground';
+import PrismaticBurst from './PrismaticBurst';
 import AboutMe from './apps/AboutMe';
 import Resume from './apps/Resume';
 import Skills from './apps/Skills';
@@ -132,6 +133,17 @@ export default function OS() {
         waveAmpX: 40,
         waveAmpY: 20,
     });
+    const [prismaticBurstSettings, setPrismaticBurstSettings] = useState({
+        enabled: false,
+        intensity: 2,
+        speed: 0.5,
+        animationType: 'rotate3d',
+        colors: ['#ff007a', '#4d3dff', '#ffffff'],
+        distort: 0,
+        hoverDampness: 0.25,
+        rayCount: 0,
+        mixBlendMode: 'lighten',
+    });
     const desktopRef = useRef(null);
 
     const allApps = [...apps, ...utilityApps, ...gameApps];
@@ -143,6 +155,7 @@ export default function OS() {
         'gradient-4': 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
         'gradient-5': 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
         'gradient-6': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
+        'prismatic': 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
     };
 
     useEffect(() => {
@@ -153,10 +166,31 @@ export default function OS() {
                 const settings = JSON.parse(savedSettings);
                 if (settings.wallpaper) setWallpaper(settings.wallpaper);
                 if (settings.waveSettings) setWaveSettings(settings.waveSettings);
+                if (settings.prismaticBurstSettings) setPrismaticBurstSettings(settings.prismaticBurstSettings);
             } catch (e) {
                 console.error('Failed to load settings:', e);
             }
         }
+
+        // Listen for PrismaticBurst enable event from Settings
+        const handlePrismaticEnabled = () => {
+            const saved = localStorage.getItem('os-settings');
+            if (saved) {
+                try {
+                    const settings = JSON.parse(saved);
+                    if (settings.prismaticBurstSettings) {
+                        setPrismaticBurstSettings(settings.prismaticBurstSettings);
+                    }
+                } catch (e) {
+                    console.error('Failed to load settings:', e);
+                }
+            }
+        };
+        window.addEventListener('prismatic-enabled', handlePrismaticEnabled);
+
+        return () => {
+            window.removeEventListener('prismatic-enabled', handlePrismaticEnabled);
+        };
 
         // Load windows
         const saved = localStorage.getItem('os-windows');
@@ -208,6 +242,21 @@ export default function OS() {
         settings.waveSettings = waveSettings;
         localStorage.setItem('os-settings', JSON.stringify(settings));
     }, [waveSettings]);
+
+    // Save prismatic burst settings when they change
+    useEffect(() => {
+        const savedSettings = localStorage.getItem('os-settings');
+        let settings = {};
+        if (savedSettings) {
+            try {
+                settings = JSON.parse(savedSettings);
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+        settings.prismaticBurstSettings = prismaticBurstSettings;
+        localStorage.setItem('os-settings', JSON.stringify(settings));
+    }, [prismaticBurstSettings]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -521,6 +570,21 @@ export default function OS() {
                 />
             )}
 
+            {prismaticBurstSettings.enabled && (
+                <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+                    <PrismaticBurst
+                        intensity={prismaticBurstSettings.intensity}
+                        speed={prismaticBurstSettings.speed}
+                        animationType={prismaticBurstSettings.animationType}
+                        colors={prismaticBurstSettings.colors}
+                        distort={prismaticBurstSettings.distort}
+                        hoverDampness={prismaticBurstSettings.hoverDampness}
+                        rayCount={prismaticBurstSettings.rayCount}
+                        mixBlendMode={prismaticBurstSettings.mixBlendMode}
+                    />
+                </div>
+            )}
+
             <div
                 className="desktop"
                 ref={desktopRef}
@@ -777,6 +841,131 @@ export default function OS() {
                             ))}
                         </div>
                     </div>
+
+                    {/* Prismatic Burst Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-light)' }}>
+                        <span style={{ color: 'var(--text-primary)', fontSize: '13px' }}>Prismatic Burst</span>
+                        <button
+                            onClick={() => setPrismaticBurstSettings(s => ({ ...s, enabled: !s.enabled }))}
+                            style={{
+                                width: '44px',
+                                height: '24px',
+                                borderRadius: '12px',
+                                border: 'none',
+                                background: prismaticBurstSettings.enabled ? 'var(--accent-primary)' : 'var(--bg-hover)',
+                                cursor: 'pointer',
+                                position: 'relative',
+                            }}
+                        >
+                            <div style={{
+                                width: '18px',
+                                height: '18px',
+                                borderRadius: '50%',
+                                background: 'white',
+                                position: 'absolute',
+                                top: '3px',
+                                left: prismaticBurstSettings.enabled ? '23px' : '3px',
+                                transition: 'left 0.2s ease',
+                            }} />
+                        </button>
+                    </div>
+
+                    {/* Prismatic Burst Settings */}
+                    {prismaticBurstSettings.enabled && (
+                        <div style={{ marginBottom: '16px', padding: '12px', background: 'var(--bg-hover)', borderRadius: '8px' }}>
+                            {/* Animation Type */}
+                            <div style={{ marginBottom: '12px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Animation</span>
+                                <select
+                                    value={prismaticBurstSettings.animationType}
+                                    onChange={(e) => setPrismaticBurstSettings(s => ({ ...s, animationType: e.target.value }))}
+                                    style={{
+                                        width: '100%',
+                                        padding: '6px 8px',
+                                        borderRadius: '4px',
+                                        border: '1px solid var(--border-light)',
+                                        background: 'var(--bg-surface)',
+                                        color: 'var(--text-primary)',
+                                        fontSize: '12px',
+                                    }}
+                                >
+                                    <option value="rotate">Rotate</option>
+                                    <option value="rotate3d">3D Rotate</option>
+                                    <option value="hover">Hover</option>
+                                </select>
+                            </div>
+
+                            {/* Intensity */}
+                            <div style={{ marginBottom: '12px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Intensity: {prismaticBurstSettings.intensity}</span>
+                                <input
+                                    type="range"
+                                    min="0.5"
+                                    max="5"
+                                    step="0.1"
+                                    value={prismaticBurstSettings.intensity}
+                                    onChange={(e) => setPrismaticBurstSettings(s => ({ ...s, intensity: parseFloat(e.target.value) }))}
+                                    style={{ width: '100%' }}
+                                />
+                            </div>
+
+                            {/* Speed */}
+                            <div style={{ marginBottom: '12px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Speed: {prismaticBurstSettings.speed}</span>
+                                <input
+                                    type="range"
+                                    min="0.1"
+                                    max="2"
+                                    step="0.1"
+                                    value={prismaticBurstSettings.speed}
+                                    onChange={(e) => setPrismaticBurstSettings(s => ({ ...s, speed: parseFloat(e.target.value) }))}
+                                    style={{ width: '100%' }}
+                                />
+                            </div>
+
+                            {/* Colors */}
+                            <div style={{ marginBottom: '12px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Colors</span>
+                                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                    {[
+                                        ['#ff007a', '#4d3dff', '#ffffff'],
+                                        ['#ff6b6b', '#feca57', '#48dbfb'],
+                                        ['#ff9ff3', '#f368e0', '#00d2d3'],
+                                        ['#54a0ff', '#5f27cd', '#01a3a4'],
+                                        ['#ee5a24', '#009432', '#f79f1f'],
+                                        ['#1289a7', '#d980fa', '#b53471'],
+                                    ].map((colors, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setPrismaticBurstSettings(s => ({ ...s, colors }))}
+                                            style={{
+                                                width: '28px',
+                                                height: '28px',
+                                                borderRadius: '4px',
+                                                border: prismaticBurstSettings.colors[0] === colors[0] ? '2px solid var(--text-primary)' : '2px solid transparent',
+                                                background: `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)`,
+                                                cursor: 'pointer',
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Distort */}
+                            <div>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Distort: {prismaticBurstSettings.distort}</span>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="10"
+                                    step="0.5"
+                                    value={prismaticBurstSettings.distort}
+                                    onChange={(e) => setPrismaticBurstSettings(s => ({ ...s, distort: parseFloat(e.target.value) }))}
+                                    style={{ width: '100%' }}
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {/* Reset button */}
                     <button

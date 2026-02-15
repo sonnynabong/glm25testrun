@@ -9,6 +9,7 @@ const WALLPAPERS = [
     { id: 'gradient-6', name: 'Warmth', gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)' },
     { id: 'gradient-7', name: 'Purple Haze', gradient: 'linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)' },
     { id: 'gradient-8', name: 'Midnight', gradient: 'linear-gradient(135deg, #200122 0%, #6f0000 100%)' },
+    { id: 'prismatic', name: 'Prismatic', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' },
 ];
 
 export default function Settings() {
@@ -44,6 +45,37 @@ export default function Settings() {
             if (wp) {
                 desktop.style.background = wp.gradient;
             }
+        }
+
+        // Auto-enable PrismaticBurst when prismatic wallpaper is selected
+        if (wallpaper === 'prismatic') {
+            const savedSettings = localStorage.getItem('os-settings');
+            let settings = {};
+            if (savedSettings) {
+                try {
+                    settings = JSON.parse(savedSettings);
+                } catch (e) {
+                    console.error('Failed to load settings:', e);
+                }
+            }
+            if (!settings.prismaticBurstSettings) {
+                settings.prismaticBurstSettings = {
+                    enabled: true,
+                    intensity: 2,
+                    speed: 0.5,
+                    animationType: 'rotate3d',
+                    colors: ['#ff007a', '#4d3dff', '#ffffff'],
+                    distort: 0,
+                    hoverDampness: 0.25,
+                    rayCount: 0,
+                    mixBlendMode: 'lighten',
+                };
+            } else if (!settings.prismaticBurstSettings.enabled) {
+                settings.prismaticBurstSettings.enabled = true;
+            }
+            localStorage.setItem('os-settings', JSON.stringify(settings));
+            // Trigger a custom event to notify OS.jsx to reload settings
+            window.dispatchEvent(new Event('prismatic-enabled'));
         }
 
         // Apply accent color
