@@ -1,43 +1,79 @@
-# Astro Starter Kit: Minimal
+# Portfolio OS
 
-```sh
-npm create astro@latest -- --template minimal
+A web-based operating system simulation that serves as an interactive personal portfolio. Built with Astro, React, and Tailwind CSS.
+
+## Features
+
+### Desktop Experience
+- Draggable, resizable windows
+- Desktop icons and taskbar
+- Start menu with app launcher
+- System tray with clock
+- Multi-window management
+
+### Built-in Apps
+- **About Me** - Personal introduction
+- **Calculator** - Functional calculator
+- **Calendar** - Interactive calendar
+- **File Explorer** - File browser interface
+- **Games** - 2048, Memory Match, Minesweeper, Pong, Snake, Tetris
+- **Notes** - Note-taking application
+- **Portfolio** - Project showcase
+- **Projects Gallery** - Visual project gallery
+- **Resume** - Resume/CV viewer
+- **Settings** - Customization options
+- **Skills** - Skills and expertise display
+- **Terminal** - Command-line interface
+- **Weather** - Weather information
+
+### Visual Effects
+- Prismatic burst background animation
+- Waves background effect
+- Smooth window transitions
+
+## Tech Stack
+
+- **Framework**: Astro 5.x
+- **UI**: React 19
+- **Styling**: Tailwind CSS 4.x
+- **Components**: Radix UI, shadcn/ui
+- **Graphics**: OGL (WebGL)
+- **Icons**: Lucide React
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Project Structure
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
+```
+portfolio-os/
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── components/
+│   │   ├── apps/          # Application components
+│   │   ├── OS.jsx         # Main OS component
+│   │   ├── Window.jsx     # Window management
+│   │   └── PrismaticBurst.jsx  # Background effect
+│   ├── layouts/           # Astro layouts
+│   ├── lib/               # Utilities
+│   ├── pages/             # Astro pages
+│   └── styles/            # Global styles
+├── public/                # Static assets
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## License
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT
