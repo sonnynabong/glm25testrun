@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash, Calculator, Terminal, Calendar, Settings, Cloud, Folder, StickyNote, Grid } from 'lucide-react';
+import { User, FileText, Code, Layers, Briefcase, Grid3X3, RefreshCw, Gamepad2, FolderOpen, Puzzle, Music, Hash, Calculator, Terminal, Calendar, Settings, Cloud, Folder, StickyNote, Grid, Globe } from 'lucide-react';
 import Window from './Window';
 import WavesBackground from './apps/WavesBackground';
 import PrismaticBurst from './PrismaticBurst';
@@ -22,6 +22,7 @@ import WeatherApp from './apps/Weather';
 import FileExplorerApp from './apps/FileExplorer';
 import MinesweeperApp from './apps/Minesweeper';
 import TetrisApp from './apps/Tetris';
+import BrowserApp from './apps/Browser';
 
 const apps = [
     { id: 'about', title: 'About Me', icon: 'about', iconComponent: User },
@@ -39,6 +40,7 @@ const utilityApps = [
     { id: 'settings', title: 'Settings', icon: 'settings', iconComponent: Settings },
     { id: 'weather', title: 'Weather', icon: 'weather', iconComponent: Cloud },
     { id: 'files', title: 'Files', icon: 'files', iconComponent: Folder },
+    { id: 'browser', title: 'Browser', icon: 'browser', iconComponent: Globe },
 ];
 
 const gameApps = [
@@ -69,6 +71,7 @@ const appComponents = {
     files: FileExplorerApp,
     minesweeper: MinesweeperApp,
     tetris: TetrisApp,
+    browser: BrowserApp,
 };
 
 const appSizes = {
@@ -85,6 +88,7 @@ const appSizes = {
     files: { width: 600, height: 450 },
     minesweeper: { width: 380, height: 450 },
     tetris: { width: 380, height: 500 },
+    browser: { width: 800, height: 600 },
     about: { width: 650, height: 550 },
     resume: { width: 700, height: 600 },
     skills: { width: 600, height: 500 },
@@ -111,6 +115,7 @@ const initialPositions = {
     '2048': { x: 140, y: 140 },
     minesweeper: { x: 160, y: 100 },
     tetris: { x: 180, y: 80 },
+    browser: { x: 50, y: 50 },
 };
 
 export default function OS() {
@@ -534,6 +539,7 @@ export default function OS() {
             calculator: Calculator, terminal: Terminal, notes: StickyNote, calendar: Calendar,
             settings: Settings, weather: Cloud, files: Folder, snake: Gamepad2, memory: Puzzle,
             pong: Music, '2048': Hash, minesweeper: Grid, tetris: Gamepad2, folder: FolderOpen,
+            browser: Globe,
         };
         return allIcons[iconName] || Folder;
     };
@@ -546,6 +552,7 @@ export default function OS() {
         { id: 'settings', title: 'Settings', icon: 'settings', iconComponent: Settings },
         { id: 'weather', title: 'Weather', icon: 'weather', iconComponent: Cloud },
         { id: 'files', title: 'Files', icon: 'files', iconComponent: Folder },
+        { id: 'browser', title: 'Browser', icon: 'browser', iconComponent: Globe },
     ];
 
     return (
